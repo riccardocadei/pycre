@@ -12,11 +12,14 @@ def get_parser():
     parser.add_argument("--dataset_dir", default="", type=str, help="dataset directory")
     parser.add_argument("--standardize", default=False, type=bool, help="whether standardize or not the covariates")
     parser.add_argument("--subsample", default=1, type=float, help="ratio of the dataset to subsample")
-    # synthtich dataset
+    # synthetic dataset
     parser.add_argument("--n", default=100, type=int, help="number of observations for the Syntetic Dataset")
     parser.add_argument("--k", default=10, type=int, help="number of covariates for the Syntetic Dataset")
-    parser.add_argument("--binary", default=True, type=bool, help="whether the outcome is binary or continuos for the Syntetic Dataset")
+    parser.add_argument("--binary_cov", default=True, type=bool, help="whether the covariates are binary or continuos for the Syntetic Dataset")
+    parser.add_argument("--binary_out", default=True, type=bool, help="whether the outcome is binary or continuos for the Syntetic Dataset")
     parser.add_argument("--effect_size", default=2, type=float, help="effect size maginitude for the (continuos outcome) Syntetic Dataset")
+    parser.add_argument("--confounding", default="no", type=str, help="confounding mechanism for the Syntetic Dataset: 'no'=no confounding, 'lin'=linear confounding, `nonlin`=non linear confounding")
+    parser.add_argument("--n_rules", default=2, type=int, help="number of decision rules driving the HTE in the Syntetic Dataset")
     #splitting
     parser.add_argument("--ratio_dis", default=0.5, type=float, help="ratio of the observations used for discovery")
 
