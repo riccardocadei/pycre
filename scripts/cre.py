@@ -12,10 +12,8 @@ import pandas as pd
 
 def CRE(dataset, args):
 
-    # 1. Discovery
-    print(f"- Discovery Step:")
-    
-    # Honest Splitting
+    # 0. Honest Splitting
+    print("- Honest Splitting")
     args.n = dataset.shape[0]
     n_dis = int(args.n*args.ratio_dis)
     indeces = np.random.permutation(args.n)
@@ -37,6 +35,9 @@ def CRE(dataset, args):
         X_inf = dataset_inf.drop(['y', 't', 'ite'], axis=1)
     else:
         X_inf = dataset_inf.drop(['y', 't'], axis=1)
+
+    # 1. Discovery
+    print(f"- Discovery Step:")
 
     # Esitimate ITE
     print(f"    ITE Estimation")
