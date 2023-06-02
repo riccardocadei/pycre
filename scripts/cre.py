@@ -15,11 +15,12 @@ def CRE(dataset, args):
     # 1. Discovery
     print(f"- Discovery Step:")
     
-    # Split Dataset
+    # Honest Splitting
     args.n = dataset.shape[0]
     n_dis = int(args.n*args.ratio_dis)
+    indeces = np.random.permutation(args.n)
 
-    dataset_dis = dataset.iloc[:,:n_dis]
+    dataset_dis = dataset.iloc[indeces[n_dis:]]
     y_dis = dataset_dis["y"]
     t_dis = dataset_dis["t"]
     if "ite" in dataset_dis:
@@ -28,7 +29,7 @@ def CRE(dataset, args):
     else:
         X_dis = dataset_dis.drop(['y', 't'], axis=1)
 
-    dataset_inf = dataset.iloc[n_dis:,:]
+    dataset_inf = dataset.iloc[indeces[:n_dis]]
     y_inf = dataset_inf["y"]
     t_inf = dataset_inf["t"]
     if "ite" in dataset_dis:
