@@ -1,6 +1,6 @@
 import statsmodels.api as sm
 
-def estimate_cate(R, ite):
+def estimate_aate(R, ite):
     # add interecpt
     R = sm.add_constant(R)
     R.rename(columns={"const": "ATE"}, inplace=True)

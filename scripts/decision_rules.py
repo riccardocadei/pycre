@@ -78,7 +78,7 @@ def get_rules_matrix(rules, X):
     return pd.DataFrame(R)
 
 
-def rules_regularization(R, t_anom=0.02):
+def rules_filtering(R, t_anom=0.02):
     # disard too genaric or too rare rules
     generic_rules = R.describe().loc["mean"]>1-t_anom
     rare_rules = R.describe().loc["mean"]<t_anom
