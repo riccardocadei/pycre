@@ -14,8 +14,11 @@ def get_dataset(args):
     if args.dataset_name == "syntethic":
         dataset = generate_syn_dataset(n = args.n, 
                                        k = args.k, 
-                                       binary = args.binary,
-                                       effect_size = args.effect_size)
+                                       binary_cov = args.binary_cov,
+                                       binary_out = args.binary_out,
+                                       effect_size = args.effect_size,
+                                       confounding = args.confounding,
+                                       n_rules = args.n_rules)
     else: 
         raise ValueError("TO DO: check if path exists and read data")
     
@@ -93,10 +96,10 @@ def generate_syn_dataset(n = 100,
         y1 = y0
     
     # apply rules
-    rule_1 = dataset['x1']>0.5 & dataset["x2"]<=0.5
-    rule_2 = dataset["x5"]>0.5 & dataset["x6"]<=0.5
-    rule_3 = dataset["x4"]>0.5
-    rule_4 = dataset['x5']<=0.5 & dataset["x7"]>0.5 & dataset["x8"]<=0.5
+    rule_1 = (dataset['x1']>0.5) & (dataset["x2"]<=0.5)
+    rule_2 = (dataset["x5"]>0.5) & (dataset["x6"]<=0.5)
+    rule_3 = (dataset["x4"]>0.5)
+    rule_4 = (dataset['x5']<=0.5) & (dataset["x7"]>0.5) & (dataset["x8"]<=0.5)
 
     if n_rules>=1:
         y0[rule_1] += effect_size
