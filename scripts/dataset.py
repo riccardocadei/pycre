@@ -86,11 +86,7 @@ def generate_syn_dataset(n = 100,
         elif confounding=="nonlin":
             mu = dataset["x1"]+np.cos(dataset["x3"]*dataset["x4"])
         else:
-            raise ValueError(f"`{confounding}` confounding mechanism 
-                             doesn't exists. Please select between 
-                             'no' for no confounding,'lin' for linear 
-                             confounding,'nonlin' for non-linear 
-                             confounding.")
+            raise ValueError(f"`{confounding}` confounding mechanism  doesn't exists. Please select between 'no' for no confounding,'lin' for linear confounding,'nonlin' for non-linear confounding.")
         y0 = np.random.normal(loc = mu,
                               scale = 1,
                               size = n)
@@ -108,19 +104,13 @@ def generate_syn_dataset(n = 100,
         y1[rule_2] += effect_size
     if n_rules>=3:
         if binary_out:
-            raise ValueError(f"Synthtic dataset with binary outcome 
-                             and {n_rules} rules has not been 
-                             implemented yet. Available 'n_rules' 
-                             options: 1,2.")
+            raise ValueError(f"Synthtic dataset with binary outcome and {n_rules} rules has not been implemented yet. Available 'n_rules' options: 1,2.")
         else:
             y0[rule_3] += (effect_size*0.5)
     if n_rules>=4:
             y1[rule_4] += (effect_size*2)
     if n_rules>=5:
-        raise ValueError(f"Synthtic dataset with continuos outcome 
-                         and {n_rules} rules has not been 
-                         implemented yet. Available 'n_rules' 
-                         options: 1,2,3,4.")
+        raise ValueError(f"Synthtic dataset with continuos outcome and {n_rules} rules has not been implemented yet. Available 'n_rules' options: 1,2,3,4.")
     
     y = y0 * (1-t) + y1 * t
     dataset['y'] = y
