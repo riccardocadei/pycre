@@ -3,18 +3,18 @@
 from sklearn.linear_model import LogisticRegression
 
 # Q: Can map outside [-1,1] even if output is binary
-def estimate_ite_ipw(X, y, t,
+def estimate_ite_ipw(X, y, z,
                     learner=LogisticRegression(), clip_tr=0.01):
     
     ps = estimate_ps(X = X,
-                     t = t,
+                     z = z,
                      learner = learner)
     ps = clip(ps, clip_tr)
-    ite = ((t/ps)-(1-t)/(1-ps))*y
+    ite = ((z/ps)-(1-z)/(1-ps))*y
     return ite
 
-def estimate_ps(X, t, learner=LogisticRegression()):
-    learner.fit(X, t)
+def estimate_ps(X, z, learner=LogisticRegression()):
+    learner.fit(X, z)
     return learner.predict_proba(X)[:,1]
 
 def clip(array, clip_tr=0.01):

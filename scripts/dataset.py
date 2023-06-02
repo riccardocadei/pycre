@@ -51,7 +51,7 @@ def generate_syn_dataset(n = 100,
 
     Output
         dataset: pd.DataFrame with Covariates ('x1', ..., 'xk'), 
-                 Treatments ('t') and Outcome ('y')
+                 Treatments ('z') and Outcome ('y')
     """
 
     # Covariates (no correlation)
@@ -71,10 +71,10 @@ def generate_syn_dataset(n = 100,
     # Treatment
     logit = -1 -dataset["x1"] + dataset["x2"] + dataset["x3"]
     prob = np.exp(logit) / (1 + np.exp(logit))
-    t = np.random.binomial(n = 1,
+    z = np.random.binomial(n = 1,
                            p = prob, 
                            size = n)
-    dataset['t'] = t
+    dataset['z'] = z
     
     # Outcome
     if binary_out: 
@@ -115,7 +115,7 @@ def generate_syn_dataset(n = 100,
     if n_rules>=5:
         raise ValueError(f"Synthtic dataset with continuos outcome and {n_rules} rules has not been implemented yet. Available 'n_rules' options: 1,2,3,4.")
     
-    y = y0 * (1-t) + y1 * t
+    y = y0 * (1-z) + y1 * z
     dataset['y'] = y
 
     ite = y1 - y0

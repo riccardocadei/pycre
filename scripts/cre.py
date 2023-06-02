@@ -20,21 +20,21 @@ def CRE(dataset, args):
 
     dataset_dis = dataset.iloc[indeces[n_dis:]]
     y_dis = dataset_dis["y"]
-    t_dis = dataset_dis["t"]
+    z_dis = dataset_dis["z"]
     if "ite" in dataset_dis:
-        ite_dis = dataset_dis["ite"]
-        X_dis = dataset_dis.drop(['y', 't', 'ite'], axis=1)
+        #ite_dis = dataset_dis["ite"]
+        X_dis = dataset_dis.drop(['y', 'z', 'ite'], axis=1)
     else:
-        X_dis = dataset_dis.drop(['y', 't'], axis=1)
+        X_dis = dataset_dis.drop(['y', 'z'], axis=1)
 
     dataset_inf = dataset.iloc[indeces[:n_dis]]
     y_inf = dataset_inf["y"]
-    t_inf = dataset_inf["t"]
+    z_inf = dataset_inf["z"]
     if "ite" in dataset_dis:
-        ite_inf = dataset_inf["ite"]
-        X_inf = dataset_inf.drop(['y', 't', 'ite'], axis=1)
+        #ite_inf = dataset_inf["ite"]
+        X_inf = dataset_inf.drop(['y', 'z', 'ite'], axis=1)
     else:
-        X_inf = dataset_inf.drop(['y', 't'], axis=1)
+        X_inf = dataset_inf.drop(['y', 'z'], axis=1)
 
     # 1. Discovery
     print(f"- Discovery Step:")
@@ -43,13 +43,12 @@ def CRE(dataset, args):
     print(f"    ITE Estimation")
     ite_dis = estimate_ite_ipw(X = X_dis, 
                                y = y_dis, 
-                               t = t_dis)
-    ite_dis_std = standardize(ite_dis)
+                               z = z_dis)
 
     # Rules Generation
     print(f"    Rules Generation")
     rules = generate_rules(X = X_dis, 
-                           ite = ite_dis_std)
+                           ite = ite_dis)
     R_dis = get_rules_matrix(rules, X_dis)
 
     # Rules Filtering
@@ -65,7 +64,7 @@ def CRE(dataset, args):
     print(f"    ITE Estimation")
     ite_inf = estimate_ite_ipw(X = X_inf, 
                                y = y_inf, 
-                               t = t_inf)
+                               z = z_inf)
     print(f"    AATE estimatation")
     R_inf = get_rules_matrix(rules, X_inf)
     #R_inf.to_csv("results/R_inf.csv")
