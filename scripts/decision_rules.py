@@ -101,4 +101,4 @@ def rules_filtering(R, t_ext=0.02, t_corr=0.5):
                 corr_rules.add(corr.columns[i])
     R = R.drop(columns=corr_rules)
 
-    return R.columns
+    return R

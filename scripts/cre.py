@@ -52,13 +52,17 @@ def CRE(dataset, args):
                            n_trees = args.n_trees, 
                            max_depth = args.max_depth)
     R_dis = get_rules_matrix(rules, X_dis)
+    print(f"      {R_dis.shape[1]} rules generated")
 
     # Rules Filtering
     print(f"    Rules Filtering")
-    rules = rules_filtering(R_dis)
+    R_dis = rules_filtering(R_dis)
+    print(f"      {R_dis.shape[1]} rules filtered")
 
     # Rules Selection
     print(f"    Rules Selection [TO DO]")
+    print(f"      {R_dis.shape[1]} candidate rules selected")
+    rules = R_dis.columns
 
     # 2. Inference
     print(f"- Inference Step:")
