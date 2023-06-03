@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 
 def generate_rules(X, ite, n_trees=1, max_depth=3, digits=2):
+    ite -= np.mean(ite)
     rules = []
     for _ in range(n_trees):
         # bootstrap
