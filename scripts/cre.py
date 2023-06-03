@@ -48,7 +48,9 @@ def CRE(dataset, args):
     # Rules Generation
     print(f"    Rules Generation")
     rules = generate_rules(X = X_dis, 
-                           ite = ite_dis)
+                           ite = ite_dis,
+                           n_trees = args.n_trees, 
+                           max_depth = args.max_depth)
     R_dis = get_rules_matrix(rules, X_dis)
 
     # Rules Filtering

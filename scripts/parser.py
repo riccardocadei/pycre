@@ -23,8 +23,10 @@ def get_parser():
     #splitting
     parser.add_argument("--ratio_dis", default=0.5, type=float, help="ratio of the observations used for discovery")
 
-    # ITE estimation
+    # Discovery
+    parser.add_argument("--n_trees", default=20, type=int, help="number of decision trees for rules discovery")
+    parser.add_argument("--max_depth", default=3, type=int, help="max depth of decision trees for rules discovery (i.e., max decision rules depth)")
 
-    # CATE estimation
+    # Inference
     
     return parser
