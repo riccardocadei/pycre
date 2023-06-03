@@ -26,6 +26,8 @@ def get_parser():
     # Discovery
     parser.add_argument("--n_trees", default=20, type=int, help="number of decision trees for rules discovery")
     parser.add_argument("--max_depth", default=3, type=int, help="max depth of decision trees for rules discovery (i.e., max decision rules depth)")
+    parser.add_argument("--t_ext", default=0.02, type=float, help="threshold to discard too generic or too specific (extreme)")
+    parser.add_argument("--t_corr", default=0.5, type=float, help="threshold to discard too correlated rules")
 
     # Inference
     

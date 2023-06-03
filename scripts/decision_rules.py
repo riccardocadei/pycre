@@ -85,9 +85,20 @@ def get_rules_matrix(rules, X):
     return pd.DataFrame(R)
 
 
-def rules_filtering(R, t_anom=0.02):
-    # disard too genaric or too rare rules
-    generic_rules = R.describe().loc["mean"]>1-t_anom
-    rare_rules = R.describe().loc["mean"]<t_anom
+def rules_filtering(R, t_ext=0.02, t_corr=0.5):
+    
+    # disard extreme rules
+    generic_rules = R.describe().loc["mean"]>1-t_ext
+    rare_rules = R.describe().loc["mean"]<t_ext
     R = R.loc[:,~(generic_rules | rare_rules)]
+    
+    # discard correlated rules
+    corr = R.corr().abs()
+    corr_rules = set()
+    for i in range(len(corr.columns)):
+        for j in range(i):
+            if corr.iloc[i, j] >= t_corr:
+                corr_rules.add(corr.columns[i])
+    R = R.drop(columns=corr_rules)
+
     return R.columns
