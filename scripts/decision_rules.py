@@ -1,15 +1,21 @@
 from sklearn.tree import _tree
 from sklearn.tree import DecisionTreeRegressor
-from sklearn import tree
 import numpy as np
 import pandas as pd
 
 def generate_rules(X, ite, n_trees=1, max_depth=3, digits=2):
+    rules = []
     for _ in range(n_trees):
+        # bootstrap
+        X = X.sample(frac=0.5, )
+        ite = ite[X.index]
+        # decision tree
         model = DecisionTreeRegressor(max_depth = max_depth)
         model.fit(X, ite)
         #print(tree.export_text(model))
-        rules = get_rules(model, X.columns, digits)
+        rules += get_rules(model, X.columns, digits)
+        # discard doubles rules
+        rules = list(set(rules))
     return rules
 
 
