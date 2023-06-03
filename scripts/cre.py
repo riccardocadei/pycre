@@ -5,6 +5,7 @@ from dataset import get_dataset
 from ite import estimate_ite_ipw
 from utils import standardize
 from decision_rules import generate_rules, get_rules_matrix, rules_filtering
+from rules_selection import stability_selection
 from aate import estimate_aate
 
 import numpy as np
@@ -60,9 +61,9 @@ def CRE(dataset, args):
     print(f"      {R_dis.shape[1]} rules filtered")
 
     # Rules Selection
-    print(f"    Rules Selection [TO DO]")
-    print(f"      {R_dis.shape[1]} candidate rules selected")
-    rules = R_dis.columns
+    print(f"    Rules Selection")
+    rules = stability_selection(R_dis, ite_dis, t_ss=args.t_ss)
+    print(f"      {len(rules)} candidate rules selected")
 
     # 2. Inference
     print(f"- Inference Step:")
