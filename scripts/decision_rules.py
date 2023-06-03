@@ -7,13 +7,14 @@ def generate_rules(X, ite, n_trees=1, max_depth=3, digits=2):
     rules = []
     for _ in range(n_trees):
         # bootstrap
-        X = X.sample(frac=0.5)
-        ite = ite[X.index]
+        X_ = X.sample(frac=0.5)
+        ite_ = ite[X_.index]
         # decision tree
         model = DecisionTreeRegressor(max_depth = max_depth)
-        model.fit(X, ite)
-        #print(tree.export_text(model))
-        rules += get_rules(model, X.columns, digits)
+        model.fit(X_, ite_)
+        # visualize
+        # print(tree.export_text(model))
+        rules += get_rules(model, X_.columns, digits)
         # discard doubles rules
         rules = sorted(set(rules))
     return rules
