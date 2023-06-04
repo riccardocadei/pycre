@@ -75,9 +75,9 @@ def CRE(dataset, args):
     print(f"    AATE estimatation")
     R_inf = get_rules_matrix(rules, X_inf)
     #R_inf.to_csv("results/R_inf.csv")
-    AATE = estimate_aate(R_inf, ite_inf)
-    print(AATE.summary())
-    return
+    results = estimate_aate(R_inf, ite_inf)
+    print(results)
+    return results
 
 def main(args):
     # reproducibility
