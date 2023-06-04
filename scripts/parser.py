@@ -13,7 +13,7 @@ def get_parser():
     parser.add_argument("--standardize", default=False, type=bool, help="whether standardize or not the covariates")
     parser.add_argument("--subsample", default=1, type=float, help="ratio of the dataset to subsample")
     # synthetic dataset
-    parser.add_argument("--n", default=100, type=int, help="number of observations for the Syntetic Dataset")
+    parser.add_argument("--n", default=1000, type=int, help="number of observations for the Syntetic Dataset")
     parser.add_argument("--k", default=10, type=int, help="number of covariates for the Syntetic Dataset")
     parser.add_argument("--binary_cov", default=True, type=bool, help="whether the covariates are binary or continuos for the Syntetic Dataset")
     parser.add_argument("--binary_out", default=True, type=bool, help="whether the outcome is binary or continuos for the Syntetic Dataset")

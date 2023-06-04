@@ -58,7 +58,7 @@ def generate_syn_dataset(n = 100,
     if binary_cov:
         X = np.random.binomial(n = 1, 
                                p = 0.5, 
-                               size = (100, 10)) 
+                               size = (n, k)) 
     else: 
         X = np.random.uniform(low = 0, 
                               high = 1, 
