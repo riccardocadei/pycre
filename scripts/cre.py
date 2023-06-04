@@ -1,17 +1,22 @@
-import logging
-
 from parser import get_parser
 from dataset import get_dataset
 from ite import estimate_ite_ipw
-from utils import standardize
-from decision_rules import generate_rules, get_rules_matrix, rules_filtering
-from rules_selection import stability_selection
+from decision_rules import generate_rules, get_rules_matrix, rules_filtering, stability_selection
 from aate import estimate_aate
 
 import numpy as np
-import pandas as pd
 
 def CRE(dataset, args):
+    """
+    CRE algorithm
+    Input
+        dataset: pd.DataFrame with with Covariates ('name1', ..., 'namek'), 
+                 Treatments ('z') and Outcome ('y')
+        args: arguments from parser
+    Output
+        results: pd.DataFrame with ATE and AATE estimates and
+        confidence intervals
+    """
 
     # 0. Honest Splitting
     print("- Honest Splitting")
@@ -51,7 +56,8 @@ def CRE(dataset, args):
     rules = generate_rules(X = X_dis, 
                            ite = ite_dis,
                            n_trees = args.n_trees, 
-                           max_depth = args.max_depth)
+                           max_depth = args.max_depth,
+                           decimal = args.decimal)
     R_dis = get_rules_matrix(rules, X_dis)
     print(f"      {R_dis.shape[1]} rules generated")
 
@@ -62,7 +68,11 @@ def CRE(dataset, args):
 
     # Rules Selection
     print(f"    Rules Selection")
-    rules = stability_selection(R_dis, ite_dis, t_ss=args.t_ss)
+    rules = stability_selection(R_dis, ite_dis, 
+                                t_ss = args.t_ss, 
+                                B = args.B,
+                                alphas = args.alphas,
+                                folds = args.folds)
     print(f"      {len(rules)} candidate rules selected")
 
     # 2. Inference
@@ -81,7 +91,7 @@ def CRE(dataset, args):
     return results
 
 def main(args):
-    # reproducibility
+    # set seed (reproducibility)
     np.random.seed(args.seed)
 
     print(f"Load {args.dataset_name} dataset")
