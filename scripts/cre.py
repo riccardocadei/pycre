@@ -76,6 +76,7 @@ def CRE(dataset, args):
     R_inf = get_rules_matrix(rules, X_inf)
     #R_inf.to_csv("results/R_inf.csv")
     results = estimate_aate(R_inf, ite_inf)
+    results.index = results.index.str.replace("\(X\['|\)|'\]", "", regex=True)
     print(results)
     return results
 
