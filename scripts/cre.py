@@ -1,5 +1,5 @@
 from parser import get_parser
-from dataset import get_dataset
+from dataset import get_dataset, honest_splitting
 from ite import estimate_ite_ipw
 from decision_rules import generate_rules, get_rules_matrix, rules_filtering, stability_selection
 from aate import estimate_aate
@@ -20,39 +20,21 @@ def CRE(dataset, args):
 
     # 0. Honest Splitting
     print("- Honest Splitting")
-    args.n = dataset.shape[0]
-    n_dis = int(args.n*args.ratio_dis)
-    indeces = np.random.permutation(args.n)
-
-    dataset_dis = dataset.iloc[indeces[n_dis:]]
-    y_dis = dataset_dis["y"]
-    z_dis = dataset_dis["z"]
-    if "ite" in dataset_dis:
-        #ite_dis = dataset_dis["ite"]
-        X_dis = dataset_dis.drop(['y', 'z', 'ite'], axis=1)
-    else:
-        X_dis = dataset_dis.drop(['y', 'z'], axis=1)
-
-    dataset_inf = dataset.iloc[indeces[:n_dis]]
-    y_inf = dataset_inf["y"]
-    z_inf = dataset_inf["z"]
-    if "ite" in dataset_dis:
-        #ite_inf = dataset_inf["ite"]
-        X_inf = dataset_inf.drop(['y', 'z', 'ite'], axis=1)
-    else:
-        X_inf = dataset_inf.drop(['y', 'z'], axis=1)
+    dis, inf = honest_splitting(dataset, args.ratio_dis)
+    X_dis, y_dis, z_dis = dis
+    X_inf, y_inf, z_inf = inf
 
     # 1. Discovery
-    print(f"- Discovery Step:")
+    print("- Discovery Step:")
 
     # Esitimate ITE
-    print(f"    ITE Estimation")
+    print("    ITE Estimation")
     ite_dis = estimate_ite_ipw(X = X_dis, 
                                y = y_dis, 
                                z = z_dis)
 
     # Rules Generation
-    print(f"    Rules Generation")
+    print("    Rules Generation")
     rules = generate_rules(X = X_dis, 
                            ite = ite_dis,
                            n_trees = args.n_trees, 
@@ -62,7 +44,7 @@ def CRE(dataset, args):
     print(f"      {R_dis.shape[1]} rules generated")
 
     # Rules Filtering
-    print(f"    Rules Filtering")
+    print("    Rules Filtering")
     R_dis = rules_filtering(R_dis)
     print(f"      {R_dis.shape[1]} rules filtered")
 
@@ -76,13 +58,13 @@ def CRE(dataset, args):
     print(f"      {len(rules)} candidate rules selected")
 
     # 2. Inference
-    print(f"- Inference Step:")
+    print("- Inference Step:")
     # Esitimate ITE
-    print(f"    ITE Estimation")
+    print("    ITE Estimation")
     ite_inf = estimate_ite_ipw(X = X_inf, 
                                y = y_inf, 
                                z = z_inf)
-    print(f"    AATE estimatation")
+    print("    AATE estimatation")
     R_inf = get_rules_matrix(rules, X_inf)
     #R_inf.to_csv("results/R_inf.csv")
     results = estimate_aate(R_inf, ite_inf)
@@ -97,7 +79,7 @@ def main(args):
     print(f"Load {args.dataset_name} dataset")
     dataset = get_dataset(args)
     
-    print(f"Run CRE algorithm")
+    print("Run CRE algorithm")
     result = CRE(dataset, args)
 
     return result

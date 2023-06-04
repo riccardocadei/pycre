@@ -121,3 +121,34 @@ def generate_syn_dataset(n = 100,
     ite = y1 - y0
     dataset['ite'] = ite 
     return dataset
+
+def honest_splitting(dataset, ratio_dis = 0.5):
+    """
+    Honest Splitting
+
+    Input
+        dataset: pd.DataFrame with Covariates ('name1', ..., 'namek'), 
+                 Treatments ('z') and Outcome ('y')
+        ratio_dis: ratio of the observations used for discovery
+    
+    Output
+        [[X_dis, y_dis, z_dis], [X_inf, y_inf, z_inf]]: 
+            list of two lists with discovery and inference data
+    """
+
+    if "ite" in dataset: dataset = dataset.drop(['ite'], axis=1)
+    N = dataset.shape[0]
+    N_dis = int(N*ratio_dis)
+    indeces = np.random.permutation(N)
+
+    dataset_dis = dataset.iloc[indeces[N_dis:]]
+    y_dis = dataset_dis["y"]
+    z_dis = dataset_dis["z"]
+    X_dis = dataset_dis.drop(['y', 'z'], axis=1)
+
+    dataset_inf = dataset.iloc[indeces[:N_dis]]
+    y_inf = dataset_inf["y"]
+    z_inf = dataset_inf["z"]
+    X_inf = dataset_inf.drop(['y', 'z'], axis=1)
+
+    return [[X_dis, y_dis, z_dis], [X_inf, y_inf, z_inf]]
