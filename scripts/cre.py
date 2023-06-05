@@ -45,7 +45,9 @@ def CRE(dataset, args):
 
     # Rules Filtering
     print("    Rules Filtering")
-    R_dis = rules_filtering(R_dis)
+    R_dis = rules_filtering(R_dis,
+                            t_ext = args.t_ext, 
+                            t_corr = args.t_corr,)
     print(f"      {R_dis.shape[1]} rules filtered")
 
     # Rules Selection

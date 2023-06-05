@@ -144,6 +144,8 @@ def rules_filtering(R, t_ext=0.02, t_corr=0.5):
     generic_rules = R.describe().loc["mean"]>1-t_ext
     rare_rules = R.describe().loc["mean"]<t_ext
     R = R.loc[:,~(generic_rules | rare_rules)]
+    if R.shape[1]==0: 
+        raise ValueError("No candidates rules left after `extreme rules filtering`. Reduce `t_ext`.")
     
     # discard correlated rules
     corr = R.corr().abs()
@@ -153,6 +155,8 @@ def rules_filtering(R, t_ext=0.02, t_corr=0.5):
             if corr.iloc[i, j] >= t_corr:
                 corr_rules.add(corr.columns[i])
     R = R.drop(columns=corr_rules)
+    if R.shape[1]==0:
+        raise ValueError("No candidates rules left after `correlated rules filtering`. Increase `t_corr`.")
 
     return R
 
@@ -187,4 +191,7 @@ def stability_selection(R, ite,
     stability_scores /= B
 
     rules = list(R.columns[stability_scores > t_ss])
+    if len(rules)==0:
+        raise ValueError(f"No HTE discovered with stability selection threshold `t_ss`={t_ss} (no candidate rules selected`).")
+    
     return rules
