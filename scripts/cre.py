@@ -4,6 +4,10 @@ from ite import estimate_ite
 from decision_rules import generate_rules, get_rules_matrix, rules_filtering, stability_selection
 from aate import estimate_aate
 
+# suppress warnings
+import warnings
+warnings.filterwarnings("ignore")
+
 import numpy as np
 
 def CRE(dataset, args):
