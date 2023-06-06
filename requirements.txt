@@ -2,3 +2,6 @@ pandas
 numpy
 scikit-learn
 statsmodels
+econml
+seaborn
+matplotlib

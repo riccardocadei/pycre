@@ -33,13 +33,19 @@ def get_parser():
     parser.add_argument("--alphas", default=[0.1, 0.5, 1.0], type=list, help="alpha values for stability selection in rules selection")
     parser.add_argument("--B", default=50, type=int, help="number of bootstrap samples for stability selection in rules selection")
     parser.add_argument("--folds", default=5, type=int, help="number of folds for stability selection in rules selection")
-    parser.add_argument("--ite_estimator_dis", default="causalforest", type=str, help="ITE estimator for discovery")
+    parser.add_argument("--ite_estimator_dis", default="slearner", type=str, help="ITE estimator for discovery")
     
     # Inference
-    parser.add_argument("--ite_estimator_inf", default="causalforest", type=str, help="ITE estimator for inference")
+    parser.add_argument("--ite_estimator_inf", default="slearner", type=str, help="ITE estimator for inference")
 
     # General
     parser.add_argument("--learner_y", default=GradientBoostingClassifier(), help="learner for outcome")
     parser.add_argument("--learner_ps", default=GradientBoostingClassifier(), help="learner for propensity score")
-    
+    parser.add_argument("--exp_name", default="example.png", type=str, help="experiment name")
+
+    # plot
+    parser.add_argument("--save", default=True, type=bool, help="save plot")
+    parser.add_argument("--xrange", default=2, type=int, help="x-axis range")
+    parser.add_argument("--path", default="results/", type=str, help="path to save plot")
+
     return parser

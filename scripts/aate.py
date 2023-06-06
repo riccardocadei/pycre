@@ -24,5 +24,6 @@ def estimate_aate(R, ite):
                   exog = R).fit().summary().tables[1]
     aate = pd.DataFrame(aate.data[1:], columns=aate.data[0]).set_index("")
     
-    results = pd.concat([ate, aate])
+    results = pd.concat([ate, aate]).astype(float)
+    
     return results

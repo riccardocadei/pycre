@@ -3,6 +3,7 @@ from dataset import get_dataset, honest_splitting
 from ite import estimate_ite
 from decision_rules import generate_rules, get_rules_matrix, rules_filtering, stability_selection
 from aate import estimate_aate
+from visualize import plot
 
 # suppress warnings
 import warnings
@@ -81,6 +82,11 @@ def CRE(dataset, args):
     R_inf = get_rules_matrix(rules, X_inf)
     #R_inf.to_csv("results/R_inf.csv")
     results = estimate_aate(R_inf, ite_inf)
+    plot(results,
+         xrange = args.xrange,
+         save = args.save,
+         path = args.path,
+         exp_name = args.exp_name)
     results.index = results.index.str.replace("\(X\['|\)|'\]", "", regex=True)
     print(results)
     return results
