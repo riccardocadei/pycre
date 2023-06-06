@@ -190,7 +190,7 @@ def stability_selection(R, ite,
         stability_scores[non_zero_indices] += 1
     stability_scores /= B
 
-    rules = list(R.columns[stability_scores > t_ss])
+    rules = list(R.columns[stability_scores >= t_ss])
     if len(rules)==0:
         raise ValueError(f"No HTE discovered with stability selection threshold `t_ss`={t_ss} (no candidate rules selected`).")
     

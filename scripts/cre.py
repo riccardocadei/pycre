@@ -1,6 +1,6 @@
 from parser import get_parser
 from dataset import get_dataset, honest_splitting
-from ite import estimate_ite_ipw
+from ite import estimate_ite
 from decision_rules import generate_rules, get_rules_matrix, rules_filtering, stability_selection
 from aate import estimate_aate
 
@@ -29,9 +29,12 @@ def CRE(dataset, args):
 
     # Esitimate ITE
     print("    ITE Estimation")
-    ite_dis = estimate_ite_ipw(X = X_dis, 
-                               y = y_dis, 
-                               z = z_dis)
+    ite_dis = estimate_ite(X = X_dis, 
+                           y = y_dis, 
+                           z = z_dis,
+                           method = args.ite_estimator_dis,
+                           learner_y = args.learner_y,
+                           learner_ps = args.learner_ps)
 
     # Rules Generation
     print("    Rules Generation")
@@ -63,9 +66,13 @@ def CRE(dataset, args):
     print("- Inference Step:")
     # Esitimate ITE
     print("    ITE Estimation")
-    ite_inf = estimate_ite_ipw(X = X_inf, 
-                               y = y_inf, 
-                               z = z_inf)
+    ite_inf = estimate_ite(X = X_inf, 
+                           y = y_inf, 
+                           z = z_inf,
+                           method = args.ite_estimator_inf,
+                           learner_y = args.learner_y,
+                           learner_ps = args.learner_ps)
+    
     print("    AATE estimatation")
     R_inf = get_rules_matrix(rules, X_inf)
     #R_inf.to_csv("results/R_inf.csv")

@@ -1,3 +1,4 @@
+from sklearn.ensemble import GradientBoostingClassifier
 import argparse
 
 def get_parser():
@@ -23,7 +24,7 @@ def get_parser():
     parser.add_argument("--ratio_dis", default=0.5, type=float, help="ratio of the observations used for discovery")
 
     # Discovery
-    parser.add_argument("--n_trees", default=40, type=int, help="number of decision trees for rules discovery")
+    parser.add_argument("--n_trees", default=100, type=int, help="number of decision trees for rules discovery")
     parser.add_argument("--max_depth", default=2, type=int, help="max depth of decision trees for rules discovery (i.e., max decision rules depth)")
     parser.add_argument("--decimal", default=2, type=int, help="number of digits to round the rules' thresholds")
     parser.add_argument("--t_ext", default=0.02, type=float, help="threshold to discard too generic or too specific (extreme)")
@@ -32,7 +33,13 @@ def get_parser():
     parser.add_argument("--alphas", default=[0.1, 0.5, 1.0], type=list, help="alpha values for stability selection in rules selection")
     parser.add_argument("--B", default=50, type=int, help="number of bootstrap samples for stability selection in rules selection")
     parser.add_argument("--folds", default=5, type=int, help="number of folds for stability selection in rules selection")
+    parser.add_argument("--ite_estimator_dis", default="causalforest", type=str, help="ITE estimator for discovery")
     
     # Inference
+    parser.add_argument("--ite_estimator_inf", default="causalforest", type=str, help="ITE estimator for inference")
+
+    # General
+    parser.add_argument("--learner_y", default=GradientBoostingClassifier(), help="learner for outcome")
+    parser.add_argument("--learner_ps", default=GradientBoostingClassifier(), help="learner for propensity score")
     
     return parser
