@@ -24,16 +24,16 @@ def CRE(dataset, args):
     """
 
     # 0. Honest Splitting
-    print("- Honest Splitting")
+    if args.verbose: print("- Honest Splitting")
     dis, inf = honest_splitting(dataset, args.ratio_dis)
     X_dis, y_dis, z_dis = dis
     X_inf, y_inf, z_inf = inf
 
     # 1. Discovery
-    print("- Discovery Step:")
+    if args.verbose: print("- Discovery Step:")
 
     # Esitimate ITE
-    print("    ITE Estimation")
+    if args.verbose: print("    ITE Estimation")
     ite_dis = estimate_ite(X = X_dis, 
                            y = y_dis, 
                            z = z_dis,
@@ -42,35 +42,35 @@ def CRE(dataset, args):
                            learner_ps = args.learner_ps)
 
     # Rules Generation
-    print("    Rules Generation")
+    if args.verbose: print("    Rules Generation")
     rules = generate_rules(X = X_dis, 
                            ite = ite_dis,
                            n_trees = args.n_trees, 
                            max_depth = args.max_depth,
                            decimal = args.decimal)
     R_dis = get_rules_matrix(rules, X_dis)
-    print(f"      {R_dis.shape[1]} rules generated")
+    if args.verbose: print(f"      {R_dis.shape[1]} rules generated")
 
     # Rules Filtering
-    print("    Rules Filtering")
+    if args.verbose: print("    Rules Filtering")
     R_dis = rules_filtering(R_dis,
                             t_ext = args.t_ext, 
                             t_corr = args.t_corr,)
-    print(f"      {R_dis.shape[1]} rules filtered")
+    if args.verbose: print(f"      {R_dis.shape[1]} rules filtered")
 
     # Rules Selection
-    print(f"    Rules Selection")
+    if args.verbose: print(f"    Rules Selection")
     rules = stability_selection(R_dis, ite_dis, 
                                 t_ss = args.t_ss, 
                                 B = args.B,
                                 alphas = args.alphas,
                                 folds = args.folds)
-    print(f"      {len(rules)} candidate rules selected")
+    if args.verbose: print(f"      {len(rules)} candidate rules selected")
 
     # 2. Inference
-    print("- Inference Step:")
+    if args.verbose: print("- Inference Step:")
     # Esitimate ITE
-    print("    ITE Estimation")
+    if args.verbose: print("    ITE Estimation")
     ite_inf = estimate_ite(X = X_inf, 
                            y = y_inf, 
                            z = z_inf,
@@ -78,17 +78,18 @@ def CRE(dataset, args):
                            learner_y = args.learner_y,
                            learner_ps = args.learner_ps)
     
-    print("    AATE estimatation")
+    if args.verbose: print("    AATE estimatation")
     R_inf = get_rules_matrix(rules, X_inf)
-    #R_inf.to_csv("results/R_inf.csv")
     results = estimate_aate(R_inf, ite_inf)
     plot(results,
          xrange = args.xrange,
          save = args.save,
          path = args.path,
          exp_name = args.exp_name)
-    results.index = results.index.str.replace("\(X\['|\)|'\]", "", regex=True)
-    print(results)
+    if args.verbose: 
+        results_interpretable = results.copy()
+        results_interpretable.index = results_interpretable.index.str.replace("\(X\['|\)|'\]", "", regex=True)
+        print(results_interpretable)
     return results
 
 def main(args):

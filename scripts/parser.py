@@ -42,6 +42,7 @@ def get_parser():
     parser.add_argument("--learner_y", default=GradientBoostingClassifier(), help="learner for outcome")
     parser.add_argument("--learner_ps", default=GradientBoostingClassifier(), help="learner for propensity score")
     parser.add_argument("--exp_name", default="example.png", type=str, help="experiment name")
+    parser.add_argument("--verbose", default=True, type=bool, help="verbose")
 
     # plot
     parser.add_argument("--save", default=True, type=bool, help="save plot")
