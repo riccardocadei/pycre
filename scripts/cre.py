@@ -5,15 +5,17 @@ from decision_rules import generate_rules, get_rules_matrix, rules_filtering, st
 from aate import estimate_aate
 from visualize import plot
 
+import pandas as pd
+
 # suppress warnings
 import warnings
 warnings.filterwarnings("ignore")
 
 import numpy as np
 
-def CRE(dataset, args):
+def fit(dataset, args):
     """
-    CRE algorithm
+    Fit CRE model
     Input
         dataset: pd.DataFrame with with Covariates ('name1', ..., 'namek'), 
                  Treatments ('z') and Outcome ('y')
@@ -87,23 +89,58 @@ def CRE(dataset, args):
          path = args.path,
          exp_name = args.exp_name)
     if args.verbose: 
-        results_interpretable = results.copy()
-        results_interpretable.index = results_interpretable.index.str.replace("\(X\['|\)|'\]", "", regex=True)
-        print(results_interpretable)
+        temp = results.copy()
+        temp.index = temp.index.str.replace("\(X\['|\)|'\]", "", regex=True)
+        print(temp)
+
     return results
 
 def main(args):
     # set seed (reproducibility)
     np.random.seed(args.seed)
 
-    print(f"Load {args.dataset_name} dataset")
+    if args.verbose: print(f"Load {args.dataset_name} dataset")
     dataset = get_dataset(args)
     
-    print("Run CRE algorithm")
-    result = CRE(dataset, args)
+    if args.verbose: print("Run CRE algorithm")
+    model = CRE(args)
+    model.fit(dataset)
+    ite = model.eval(dataset)
 
-    return result
+    return ite
 
 if __name__ == "__main__":
     args = get_parser().parse_args()
     main(args)
+
+def predict(X, result):
+    """
+    Predict ITE for new data
+    
+    Input
+        X: pd.DataFrame with with Covariates ('name1', ..., 'namek')
+        result: pd.DataFrame with ATE and AATE estimates and
+        confidence intervals
+        
+    Output
+        ite: pd.DataFrame with ITE estimates
+    """
+    R = get_rules_matrix(list(result.index)[1:], X)
+    R.insert(0, 'ATE', 1)
+    ite = R.mul(result['coef'].values, axis=1).sum(axis=1)
+
+    return ite
+
+
+class CRE:
+    def __init__(self, args):
+        self.args = args
+
+    def fit(self, dataset):
+        self.dataset = dataset
+        self.model = fit(dataset, self.args)
+        self.rules = list(self.model.index)[1:]
+
+    def eval(self, X):
+        self.ite = predict(X, self.model)
+        return self.ite
