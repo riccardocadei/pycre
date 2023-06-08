@@ -23,6 +23,7 @@ def plot(result,
         plot
     """
 
+    result = result.copy()
     result.index = result.index.str.replace("\(X\['|\)|'\]", "", regex=True)
     ATE = result.iloc[0]
     AATE = result.iloc[1:]
