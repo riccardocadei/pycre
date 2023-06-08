@@ -41,7 +41,7 @@ def plot_aate(model, args):
     
     if args.save: 
         if not os.path.exists(args.path):
-            os.makedirs(path)
+            os.makedirs(args.path)
         plt.savefig(args.path+args.exp_name)
     else:
         plt.show()
