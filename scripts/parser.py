@@ -45,7 +45,7 @@ def get_parser():
     parser.add_argument("--verbose", default=True, type=bool, help="verbose")
 
     # plot
-    parser.add_argument("--save", default=True, type=bool, help="save plot")
+    parser.add_argument("--save", default=False, type=bool, help="save plot")
     parser.add_argument("--xrange", default=2, type=int, help="x-axis range")
     parser.add_argument("--path", default="results/", type=str, help="path to save plot")
 
