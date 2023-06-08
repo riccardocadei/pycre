@@ -6,12 +6,14 @@ from aate import estimate_aate
 import warnings
 warnings.filterwarnings("ignore")
 
-def train(dataset, args):
+def train(X, y, z, args):
     """
     Fit CRE model
+
     Input
-        dataset: pd.DataFrame with with Covariates ('name1', ..., 'namek'), 
-                 Treatments ('z') and Outcome ('y')
+        X: pd.DataFrame with Covariates ('name1', ..., 'namek')
+        y: pd.Series with Outcome ('y')
+        z: pd.Series with Treatment ('z')
         args: arguments from parser
     Output
         model: pd.DataFrame with ATE and AATE estimates and
@@ -20,7 +22,7 @@ def train(dataset, args):
 
     # 0. Honest Splitting
     if args.verbose: print("- Honest Splitting")
-    dis, inf = honest_splitting(dataset, args.ratio_dis)
+    dis, inf = honest_splitting(X, y, z, args.ratio_dis)
     X_dis, y_dis, z_dis = dis
     X_inf, y_inf, z_inf = inf
 
@@ -32,7 +34,7 @@ def train(dataset, args):
     ite_dis = estimate_ite(X = X_dis, 
                            y = y_dis, 
                            z = z_dis,
-                           method = args.ite_estimator_dis,
+                           method = args.method,
                            learner_y = args.learner_y,
                            learner_ps = args.learner_ps)
 
@@ -69,7 +71,7 @@ def train(dataset, args):
     ite_inf = estimate_ite(X = X_inf, 
                            y = y_inf, 
                            z = z_inf,
-                           method = args.ite_estimator_inf,
+                           method = args.method,
                            learner_y = args.learner_y,
                            learner_ps = args.learner_ps)
     

@@ -1,5 +1,5 @@
 from parser import get_parser
-from dataset import get_dataset
+from dataset import dataset_generator
 from plot import plot_aate
 from training import train
 from predict import predict
@@ -12,26 +12,24 @@ class CRE:
         self.args = args
         np.random.seed(args.seed)
 
-    def fit(self, dataset):
-        self.dataset = dataset
-        self.model = train(dataset, self.args)
+    def fit(self, X, y, z):
+        self.model = train(X, y, z, self.args)
         self.rules = list(self.model.index)[1:]
 
+    def eval(self, X):
+        return predict(X, self.model)
+    
     def plot(self):
         plot_aate(self.model, self.args)
 
-    def eval(self, X):
-        self.ite = predict(X, self.model)
-        return self.ite
 
 def main(args):
-    if args.verbose: print(f"Load {args.dataset_name} dataset")
-    dataset = get_dataset(args)
     
-    if args.verbose: print("Run CRE algorithm")
+    X, y, z, ite = dataset_generator()
+    
     model = CRE(args)
-    model.fit(dataset)
-    ite = model.eval(dataset)
+    model.fit(X, y, z)
+    ite = model.eval(X)
 
     return ite
 
