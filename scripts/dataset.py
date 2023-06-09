@@ -65,7 +65,7 @@ def dataset_generator(n = 1000,
         y0 = np.random.normal(loc = mu,
                               scale = 1,
                               size = n)
-        y1 = y0
+        y1 = y0.copy()
     
     # apply rules
     rule_1 = (X['x1']>0.5) & (X["x2"]<=0.5)
