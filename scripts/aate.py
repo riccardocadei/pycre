@@ -9,7 +9,7 @@ def estimate_aate(R, ite):
         R: pd.DataFrame Rules Matrix (N x M)
         ite: pd.Series with ITE estimates (N)
     Output
-        results: pd.DataFrame with ATE and AATE estimates and 
+        model: pd.DataFrame with ATE and AATE estimates and 
         confidence intervals
     """
 
@@ -24,5 +24,6 @@ def estimate_aate(R, ite):
                   exog = R).fit().summary().tables[1]
     aate = pd.DataFrame(aate.data[1:], columns=aate.data[0]).set_index("")
     
-    results = pd.concat([ate, aate])
-    return results
+    model = pd.concat([ate, aate]).astype(float)
+    
+    return model
