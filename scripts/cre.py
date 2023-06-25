@@ -13,14 +13,20 @@ class CRE:
         np.random.seed(args.seed)
 
     def fit(self, X, y, z):
-        self.model = train(X, y, z, self.args)
-        self.rules = list(self.model.index)[1:]
+        try:
+            self.model = train(X, y, z, self.args)
+            self.rules = list(self.model.index)[1:]
+        except:
+            self.rules = []
 
     def eval(self, X):
         return predict(X, self.model)
     
     def plot(self):
-        plot_aate(self.model, self.args)
+        if len(self.rules) == 0: 
+            raise ValueError("No rules to plot")
+        else: 
+            plot_aate(self.model, self.args)
 
 
 def main(args):

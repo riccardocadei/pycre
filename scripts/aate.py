@@ -19,11 +19,12 @@ def estimate_aate(R, ite):
     ate = pd.DataFrame(ate.data[1:], columns=ate.data[0]).set_index("")
     ate.rename(index={'const': 'ATE'}, inplace=True)
 
+    if R.empty:
+        model = ate.astype(float)
     # estimate AATE
-    aate = sm.OLS(endog = ite, 
-                  exog = R).fit().summary().tables[1]
-    aate = pd.DataFrame(aate.data[1:], columns=aate.data[0]).set_index("")
-    
-    model = pd.concat([ate, aate]).astype(float)
-    
+    else:
+        aate = sm.OLS(endog = ite, 
+                    exog = R).fit().summary().tables[1]
+        aate = pd.DataFrame(aate.data[1:], columns=aate.data[0]).set_index("")
+        model = pd.concat([ate, aate]).astype(float)
     return model

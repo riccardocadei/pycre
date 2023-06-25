@@ -62,7 +62,12 @@ def train(X, y, z, args):
                                 B = args.B,
                                 alphas = args.alphas,
                                 folds = args.folds)
-    if args.verbose: print(f"      {len(rules)} candidate rules selected")
+    if args.verbose: 
+        if len(rules) == 0:
+            print(f"      0 candidate rules selected (No HTE discovered with stability selection threshold `t_ss`={args.t_ss})")
+        else:
+            print(f"      {len(rules)} candidate rules selected")
+    
 
     # 2. Inference
     if args.verbose: print("- Inference Step:")
