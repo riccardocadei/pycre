@@ -25,7 +25,12 @@ def generate_rules(X, ite, n_trees=1, max_depth=3, decimal=2):
     rules = []
     for _ in range(n_trees):
         # bootstrap
-        X_ = X.sample(frac=0.5)
+        N = len(X)
+        if N<100: subsample_ratio = 0.5
+        elif N<1000: subsample_ratio = 0.4
+        elif N<10000: subsample_ratio = 0.3
+        else: subsample_ratio = 0.2
+        X_ = X.sample(frac=subsample_ratio)
         ite_ = ite[X_.index]
         # decision tree
         model = DecisionTreeRegressor(max_depth = max_depth)
@@ -190,8 +195,5 @@ def stability_selection(R, ite,
         stability_scores[non_zero_indices] += 1
     stability_scores /= B
 
-    rules = list(R.columns[stability_scores >= t_ss])
-    if len(rules)==0:
-        raise ValueError(f"No HTE discovered with stability selection threshold `t_ss`={t_ss} (no candidate rules selected`).")
-    
+    rules = list(R.columns[stability_scores >= t_ss])   
     return rules
