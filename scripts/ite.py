@@ -2,7 +2,7 @@ from sklearn.ensemble import GradientBoostingClassifier
 
 from econml.dml import CausalForestDML, LinearDML
 from econml.metalearners import TLearner, SLearner, XLearner
-from econml.dr import LinearDRLearner
+from econml.dr import DRLearner
 
 import pandas as pd
 
@@ -33,13 +33,14 @@ def estimate_ite(X, y, z,
         model = XLearner(models = learner_y,
                          propensity_model = learner_ps,
                          cate_models = learner_y)
-    # elif method == 'rlearner':
-    #     model = LinearDML(model_y = learner_y, 
-    #                       model_t = learner_ps,
-    #                       discrete_treatment = True)
+    elif method == 'aipw':
+        model = LinearDML(model_y = learner_y,
+                            model_t = learner_ps)
+        
     elif method == 'drlearner':
-        model = LinearDRLearner(model_propensity = learner_ps,
-                                model_regression = learner_y)
+        model = DRLearner(model_propensity = learner_ps,
+                          model_regression = learner_y,
+                          model_final = learner_y)
     elif method == 'causalforest':
         # TODO: finetune hyperparameters
         model = CausalForestDML(criterion = 'mse', 
@@ -53,4 +54,5 @@ def estimate_ite(X, y, z,
         raise ValueError(f'{method} method for ITE estimation not implemented')
     model.fit(Y=y, T=z, X=X)
     ite = pd.Series(model.effect(X), index=X.index)
+    
     return ite
