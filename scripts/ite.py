@@ -41,12 +41,7 @@ def estimate_ite(X, y, z,
                           model_regression = learner_y,
                           model_final = learner_y)
     elif method == 'causalforest':
-        # TODO: finetune hyperparameters
-        model = CausalForestDML(criterion = 'mse', 
-                                n_estimators = 500,       
-                                min_samples_leaf = 5, 
-                                max_depth = 2, 
-                                discrete_treatment = True,
+        model = CausalForestDML(discrete_treatment = True,
                                 model_t = learner_ps, 
                                 model_y = learner_y)
     else:
