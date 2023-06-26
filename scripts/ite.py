@@ -1,8 +1,8 @@
 from sklearn.ensemble import GradientBoostingClassifier
 
-from econml.dml import CausalForestDML, LinearDML
+from econml.dml import CausalForestDML
 from econml.metalearners import TLearner, SLearner, XLearner
-from econml.dr import DRLearner
+from econml.dr import DRLearner, LinearDRLearner
 
 import pandas as pd
 
@@ -34,9 +34,8 @@ def estimate_ite(X, y, z,
                          propensity_model = learner_ps,
                          cate_models = learner_y)
     elif method == 'aipw':
-        model = LinearDML(model_y = learner_y,
-                            model_t = learner_ps)
-        
+        model = AIPW(model_propensity = learner_ps,
+                     model_outcome = learner_y)
     elif method == 'drlearner':
         model = DRLearner(model_propensity = learner_ps,
                           model_regression = learner_y,
@@ -54,5 +53,21 @@ def estimate_ite(X, y, z,
         raise ValueError(f'{method} method for ITE estimation not implemented')
     model.fit(Y=y, T=z, X=X)
     ite = pd.Series(model.effect(X), index=X.index)
-    
     return ite
+
+class AIPW:
+    def __init__(self, model_propensity, model_outcome):
+        self.model_propensity = model_propensity
+        self.model_outcome = model_outcome
+
+    def fit(self, Y, T, X):
+        self.model_propensity.fit(X = X, y = T)
+        self.model_outcome.fit(X = pd.DataFrame(X).assign(z=T), y = Y)
+        mu0 = self.model_outcome.predict(pd.DataFrame(X).assign(z=0))
+        mu1 = self.model_outcome.predict(pd.DataFrame(X).assign(z=1))
+        ps = self.model_propensity.predict_proba(X)[:, 1]
+        ite = mu1 - mu0 +  T * (Y - mu1) / (ps) - (1 - T) * (Y - mu0) / (1 - ps)    
+        self.ite = pd.Series(ite, index=X.index)
+
+    def effect(self, X):
+        return pd.Series(self.ite, index=X.index)
