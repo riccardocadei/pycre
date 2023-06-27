@@ -7,7 +7,8 @@ def dataset_generator(n = 1000,
                       binary_out = False, 
                       effect_size = 2,
                       confounding = "no",
-                      n_rules = 2):
+                      n_rules = 2,
+                      seed = 1):
     """
     Generate a Syntethic Dataset
 
@@ -26,7 +27,9 @@ def dataset_generator(n = 1000,
         z: pd.Series with Treatment ('z')
         ite: pd.Series with ITE ('ite')
     """
-
+    
+    # set seed
+    np.random.seed(seed)
     # Covariates (no correlation)
     if binary_cov:
         X = np.random.binomial(n = 1, 
