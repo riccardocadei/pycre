@@ -2,7 +2,7 @@ from sklearn.ensemble import GradientBoostingClassifier
 
 from econml.dml import CausalForestDML
 from econml.metalearners import TLearner, SLearner, XLearner
-from econml.dr import DRLearner, LinearDRLearner
+from econml.dr import DRLearner
 
 import pandas as pd
 
@@ -57,9 +57,9 @@ class AIPW:
 
     def fit(self, Y, T, X):
         self.model_propensity.fit(X = X, y = T)
-        self.model_outcome.fit(X = pd.DataFrame(X).assign(z=T), y = Y)
-        mu0 = self.model_outcome.predict(pd.DataFrame(X).assign(z=0))
-        mu1 = self.model_outcome.predict(pd.DataFrame(X).assign(z=1))
+        self.model_outcome.fit(X = X.assign(z=T), y = Y)
+        mu0 = self.model_outcome.predict(X.assign(z=0))
+        mu1 = self.model_outcome.predict(X.assign(z=1))
         ps = self.model_propensity.predict_proba(X)[:, 1]
         ite = mu1 - mu0 +  T * (Y - mu1) / (ps) - (1 - T) * (Y - mu0) / (1 - ps)    
         self.ite = pd.Series(ite, index=X.index)
