@@ -186,6 +186,7 @@ def stability_selection(R, ite,
     """
 
     M = R.shape[1]
+    R = R.div(R.columns.str.count("&")+1, axis=1)
     ite = ite-np.mean(ite)
     stability_scores = np.zeros(M)
     for _ in range(B):
