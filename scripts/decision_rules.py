@@ -33,13 +33,15 @@ def generate_rules(X, ite, n_trees=1, max_depth=3, decimal=2):
         X_ = X.sample(frac=subsample_ratio)
         ite_ = ite[X_.index]
         # decision tree
-        model = DecisionTreeRegressor(max_depth = max_depth)
+        #depth = np.random.binomial(max_depth-1, 0.7)+1
+        model = DecisionTreeRegressor(max_depth = max_depth,
+                                      max_features = 0.6)
         model.fit(X_, ite_)
         # visualize
         # print(tree.export_text(model))
         rules += get_rules(model, X_.columns, decimal)
-        # discard doubles rules
-        rules = sorted(set(rules))
+    # discard doubles rules
+    rules = sorted(set(rules))
     return rules
 
 
