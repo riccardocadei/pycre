@@ -11,6 +11,7 @@ def get_parser():
     parser.add_argument("--ratio_dis", default=0.5, type=float, help="ratio of the observations used for discovery")
     parser.add_argument("--n_trees", default=20, type=int, help="number of decision trees for rules discovery")
     parser.add_argument("--max_depth", default=2, type=int, help="max depth of decision trees for rules discovery (i.e., max decision rules depth)")
+    parser.add_argument("--max_rules", default=50, type=int, help="max number of generated candidate decision rules")
     parser.add_argument("--decimal", default=2, type=int, help="number of digits to round the rules' thresholds")
     parser.add_argument("--t_ext", default=0.02, type=float, help="threshold to discard too generic or too specific (extreme)")
     parser.add_argument("--t_corr", default=0.5, type=float, help="threshold to discard too correlated rules")

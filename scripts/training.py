@@ -44,6 +44,7 @@ def train(X, y, z, args):
                            ite = ite_dis,
                            n_trees = args.n_trees, 
                            max_depth = args.max_depth,
+                           max_rules = args.max_rules,
                            decimal = args.decimal)
     R_dis = get_rules_matrix(rules, X_dis)
     if args.verbose: print(f"      {R_dis.shape[1]} rules generated")

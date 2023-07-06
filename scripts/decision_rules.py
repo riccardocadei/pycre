@@ -6,7 +6,7 @@ from sklearn.utils import resample
 import numpy as np
 import pandas as pd
 
-def generate_rules(X, ite, n_trees=1, max_depth=3, decimal=2):
+def generate_rules(X, ite, n_trees=1, max_depth=3, max_rules=50, decimal=2):
     """
     Generate decision rules from a set of trees.
 
@@ -33,15 +33,15 @@ def generate_rules(X, ite, n_trees=1, max_depth=3, decimal=2):
         X_ = X.sample(frac=subsample_ratio)
         ite_ = ite[X_.index]
         # decision tree
-        #depth = np.random.binomial(max_depth-1, 0.7)+1
         model = DecisionTreeRegressor(max_depth = max_depth,
-                                      max_features = 0.6)
+                                      max_features = 1.0)
         model.fit(X_, ite_)
         # visualize
         # print(tree.export_text(model))
         rules += get_rules(model, X_.columns, decimal)
     # discard doubles rules
-    rules = sorted(set(rules))
+    #print(pd.Series(rules).value_counts()[:20])
+    rules = sorted(list(pd.Series(rules).value_counts()[:max_rules].index))
     return rules
 
 
@@ -78,12 +78,15 @@ def get_rules(tree, feature_names, decimal=2, min_cases=0):
             recurse(tree_.children_left[node], p1, paths)
             p2 += [f"(X['{name}']>{np.round(threshold, decimal)})"]
             recurse(tree_.children_right[node], p2, paths)
+            path += [tree_.n_node_samples[node]]
+            paths += [path]
         else:
             path += [tree_.n_node_samples[node]]
             paths += [path]
             
     recurse(0, path, paths)
     
+    paths = paths[:-1]
     rules = []
     for path in paths:
 
