@@ -1,4 +1,4 @@
-from parser import get_parser
+from parsers import get_parser
 from dataset import dataset_generator
 from plot import plot_aate
 from training import train
