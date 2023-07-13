@@ -1,12 +1,13 @@
-from sklearn.tree import _tree
-from sklearn.tree import DecisionTreeRegressor
-from sklearn.linear_model import LassoCV
-from sklearn.utils import resample
-
 import numpy as np
 import pandas as pd
 
-def generate_rules(X, ite, n_trees=1, max_depth=3, max_rules=50, decimal=2):
+from sklearn.linear_model import LassoCV
+from sklearn.utils import resample
+
+from tree import DecisionTree
+
+
+def generate_rules(X, ite, n_trees=1, max_depth=3, node_size=10, max_rules=50, decimal=2, criterion="het"):
     """
     Generate decision rules from a set of trees.
 
@@ -33,89 +34,14 @@ def generate_rules(X, ite, n_trees=1, max_depth=3, max_rules=50, decimal=2):
         X_ = X.sample(frac=subsample_ratio)
         ite_ = ite[X_.index]
         # decision tree
-        model = DecisionTreeRegressor(max_depth = max_depth,
-                                      max_features = 1.0)
+        model = DecisionTree(max_depth=max_depth, 
+                             node_size=node_size, 
+                             criterion=criterion)
         model.fit(X_, ite_)
-        # visualize
-        # print(tree.export_text(model))
-        rules += get_rules(model, X_.columns, decimal)
-    # discard doubles rules
-    #print(pd.Series(rules).value_counts()[:20])
+        rules += model.get_rules(decimal)
+
+    # top rules selection
     rules = sorted(list(pd.Series(rules).value_counts()[:max_rules].index))
-    return rules
-
-
-def get_rules(tree, feature_names, decimal=2, min_cases=0):
-    """
-    Get rules from a decision tree.
-
-    Input:
-        tree: DecisionTreeRegressor
-        feature_names: list of feature names
-        decimal: number of digits to round the rules' thresholds
-        min_cases: minimum number of cases to consider a rule
-    
-    Output:
-        rules: list of candidate decision rules
-    """
-
-    tree_ = tree.tree_
-    feature_name = [
-        feature_names[i] if i != _tree.TREE_UNDEFINED else "undefined!"
-        for i in tree_.feature
-    ]
-
-    paths = []
-    path = []
-    
-    def recurse(node, path, paths):
-
-        if tree_.feature[node] != _tree.TREE_UNDEFINED:
-            name = feature_name[node]
-            threshold = tree_.threshold[node]
-            p1, p2 = list(path), list(path)
-            p1 += [f"(X['{name}']<={np.round(threshold, decimal)})"]
-            recurse(tree_.children_left[node], p1, paths)
-            p2 += [f"(X['{name}']>{np.round(threshold, decimal)})"]
-            recurse(tree_.children_right[node], p2, paths)
-            path += [tree_.n_node_samples[node]]
-            paths += [path]
-        else:
-            path += [tree_.n_node_samples[node]]
-            paths += [path]
-            
-    recurse(0, path, paths)
-    
-    paths = paths[:-1]
-    rules = []
-    for path in paths:
-
-        # TO DO: discard too specific rules
-        if path[-1]<min_cases: break
-        path = path[:-1]
-
-        # clean path
-        path.sort()
-        for feature_name in feature_names:
-            path_i = [node for node in path if feature_name in node]
-            if len(path_i)>1:
-                path_i_magg = [node for node in path_i if ">" in node]
-                if path_i_magg is not None: 
-                    if len(path_i_magg)>1:
-                        for redundant in path_i_magg[:-1]: 
-                            path.remove(redundant)
-                path_i_min = [node for node in path_i if "<" in node]
-                if path_i_min is not None:
-                    if len(path_i_min)>1:
-                        for redundant in path_i_min[1:]: 
-                            path.remove(redundant)
-        rule = ""  
-        for p in path:
-            if rule != "":
-                rule += " & "
-            rule += p
-        rules += [rule]
-        
     return rules
 
 
@@ -170,10 +96,11 @@ def rules_filtering(R, t_ext=0.02, t_corr=0.5):
 
     return R
 
+
 def stability_selection(R, ite, 
                         t_ss = 0.6, 
                         B = 50, 
-                        alphas = [0.1, 0.5, 1.0],
+                        alphas = [0.1, 1.0, 10.0],
                         folds = 5):
     """
     Select rules with stability selection.
