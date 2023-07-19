@@ -47,7 +47,8 @@ def train(X, y, z, args):
                            node_size = args.node_size,
                            max_rules = args.max_rules,
                            decimal = args.decimal,
-                           criterion = args.criterion)
+                           criterion = args.criterion,
+                           subsample = args.subsample)
     R_dis = get_rules_matrix(rules, X_dis)
     if args.verbose: print(f"      {R_dis.shape[1]} rules generated")
 
@@ -63,8 +64,8 @@ def train(X, y, z, args):
     rules = stability_selection(R_dis, ite_dis, 
                                 t_ss = args.t_ss, 
                                 B = args.B,
-                                alphas = args.alphas,
-                                folds = args.folds)
+                                subsample = args.subsample,
+                                alphas = args.alphas)
     if args.verbose: 
         if len(rules) == 0:
             print(f"      0 candidate rules selected (No HTE discovered with stability selection threshold `t_ss`={args.t_ss})")
@@ -85,7 +86,10 @@ def train(X, y, z, args):
     
     if args.verbose: print("    AATE estimatation")
     R_inf = get_rules_matrix(rules, X_inf)
-    model = estimate_aate(R_inf, ite_inf)
+    model = estimate_aate(R_inf, 
+                          ite_inf, 
+                          B = args.B, 
+                          subsample = args.subsample)
 
     if args.verbose: 
         temp = model.copy()

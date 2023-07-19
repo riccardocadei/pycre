@@ -19,8 +19,9 @@ def get_parser():
     parser.add_argument("--t_corr", default=0.5, type=float, help="threshold to discard too correlated rules")
     parser.add_argument("--t_ss", default=0.8, type=float, help="threshold for stability selection in rules selection")
     parser.add_argument("--alphas", default=[0.01,0.1, 1], type=list, help="alpha values for stability selection in rules selection")
-    parser.add_argument("--B", default=50, type=int, help="number of bootstrap samples for stability selection in rules selection")
-    parser.add_argument("--folds", default=5, type=int, help="number of folds for stability selection in rules selection")
+    parser.add_argument("--B", default=20, type=int, help="number of bootstrap samples for stability selection in rules selection and uncertainty quantification in estimation")
+    parser.add_argument("--subsample", default=0.5, type=float, help="bootstrap ratio subsample for forest generation and stability selection in rules selection, and uncertainty quantification in estimation")
+
 
     # General
     parser.add_argument("--learner_y", default=GradientBoostingRegressor(), help="learner for outcome")
