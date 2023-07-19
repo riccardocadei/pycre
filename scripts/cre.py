@@ -10,6 +10,7 @@ import numpy as np
 class CRE:
     def __init__(self, args):
         self.args = args
+        # TODO: check args
         np.random.seed(args.seed)
 
     def fit(self, X, y, z):
