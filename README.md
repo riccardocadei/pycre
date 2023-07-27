@@ -1,4 +1,6 @@
-# pycre
+<img src="docs/figures/pycre_logo.svg" alt="alt text" width="200" height="200"> 
+
+# ***py*CRE**
 
 Interpretable Discovery and Inference of Heterogeneous Treatment Effects
 In health and social sciences, it is critically important to identify subgroups of the study population where a treatment has notable heterogeneity in the causal effects with respect to the average treatment effect (ATE). The bulk of heterogeneous treatment effect (HTE) literature focuses on two major tasks: (i) estimating HTEs by examining the conditional average treatment effect (CATE); (ii) discovering subgroups of a population characterized by HTE.
