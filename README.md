@@ -15,15 +15,27 @@ pip install -r requirements.txt
 
 ## Usage
 
-1. Script (.py file)
-```
-python pycre/cre.py
+Example
+```python
+# generate synthetic dataset
+X, y, z, _ = dataset_generator(effect_size = 1,
+                               n_rules = 2,
+                               binary_out = False,
+                               n = 1000)
+
+# define model and train
+args = get_parser().parse_args(args=[])
+model = CRE(args)
+model.fit(X, y, z)
+
+# visualize 
+model.plot()
+
+# predict
+ite_pred = model.eval(X)
 ```
 
-2. Notebook (.ipynb file)
-```
-notebooks/examples.ipynb
-```
+More exhaustive examples and simulations are reported in the .ipynb files in the folder `/notebooks`.
 
 ## References
 
