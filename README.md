@@ -40,7 +40,7 @@ More exhaustive examples and simulations are reported in the .ipynb files in the
 ## References
 
 Causal Rule Ensemble ([methodological paper](https://arxiv.org/abs/2009.09036))
-```
+```bibtex
 @article{bargagli2023causal,
   title={{Causal rule ensemble: Interpretable Discovery and Inference of Heterogeneous Treatment Effects}},
   author={Bargagli-Stoffi, Falco J and Cadei, Riccardo and Lee, Kwonsang and Dominici, Francesca},
