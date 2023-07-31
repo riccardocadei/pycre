@@ -190,12 +190,10 @@ class DecisionTree:
             if node.feature != None:
                 name = node.feature
                 threshold = node.threshold
-                rule_left = rule + [f"""(X['{name}']<=
-                                    {threshold:.{self.decimal}f})"""]
+                rule_left = rule + [f"(X['{name}']<={threshold:.{self.decimal}f})"]
                 rules += [rule_left]
                 recurse(node.node_left, rule_left, rules)
-                rule_right = rule + [f"""(X['{name}']>
-                                     {threshold:.{self.decimal}f})"""]
+                rule_right = rule + [f"(X['{name}']>{threshold:.{self.decimal}f})"]
                 rules += [rule_right]
                 recurse(node.node_right, rule_right, rules)
                 
