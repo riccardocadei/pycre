@@ -1,31 +1,46 @@
 import pandas as pd
 import numpy as np
 
-def dataset_generator(n = 1000, 
-                      k = 10, 
+def dataset_generator(N = 1000, 
+                      P = 10, 
+                      M = 2,
                       binary_cov = True,
                       binary_out = False, 
                       effect_size = 2,
                       confounding = "no",
-                      n_rules = 2,
                       seed = 1):
     """
     Generate a Syntethic Dataset
 
-    Input
-        n: number of observations
-        k: number of covariates 
-        binary_cov: whether the outcome is binary or continuos
-        binary_out: whether the outcome is binary or continuos
-        effect_size: effect size magnitude
-        confounding: confounding mechanism
-        n_rules: number of decision rules driving the HTE
-
-    Output
-        X: pd.DataFrame with Covariates ('name1', ..., 'namek')
-        y: pd.Series with Outcome ('y')
-        z: pd.Series with Treatment ('z')
-        ite: pd.Series with ITE ('ite')
+    Parameters
+    ----------
+    N: int, default=1000
+        Number of observations
+    P: int, default=10
+        Number of covariates
+    M: int, default=2
+        Number of decision rules driving the HTE
+    binary_cov: bool, default=True
+        Whether the covariates are binary or continuos
+    binary_out: bool, default=False
+        Whether the outcome is binary or continuos
+    effect_size: float, default=2
+        Effect size magnitude
+    confounding: str, default="no"
+        Confounding mechanism
+    seed: int, default=1
+        Seed
+    
+    Returns
+    -------
+    X: pd.DataFrame 
+        Cobariates Matrix (N x P)
+    y: pd.Series
+        Outcome Vector (N)
+    z: pd.Series
+        Treatment Vector (N)
+    ite: pd.Series
+        ITE Vector (N)
     """
     
     # set seed
@@ -34,13 +49,13 @@ def dataset_generator(n = 1000,
     if binary_cov:
         X = np.random.binomial(n = 1, 
                                p = 0.5, 
-                               size = (n, k)) 
+                               size = (N, P)) 
     else: 
         X = np.random.uniform(low = 0, 
                               high = 1, 
-                              size = (n, k))
+                              size = (N, P))
 
-    X_names = ["x"+str(i) for i in range(1,k+1)]
+    X_names = ["x"+str(i) for i in range(1,P+1)]
     X = pd.DataFrame(data = X, 
                      columns = X_names)
 
@@ -49,12 +64,12 @@ def dataset_generator(n = 1000,
     prob = np.exp(logit) / (1 + np.exp(logit))
     z = np.random.binomial(n = 1,
                            p = prob, 
-                           size = n)
+                           size = N)
     
     # Outcome
     if binary_out: 
-        y0 = np.zeros(n)
-        y1 = np.zeros(n)
+        y0 = np.zeros(N)
+        y1 = np.zeros(N)
         effect_size = 1       
     else: 
         if confounding=="no":
@@ -64,10 +79,14 @@ def dataset_generator(n = 1000,
         elif confounding=="nonlin":
             mu = X["x1"]+np.cos(X["x3"]*X["x4"])
         else:
-            raise ValueError(f"`{confounding}` confounding mechanism  doesn't exists. Please select between 'no' for no confounding,'lin' for linear confounding,'nonlin' for non-linear confounding.")
+            raise ValueError(f"""`{confounding}` confounding mechanism  
+                             doesn't exists. Please select between 
+                             'no' for no confounding,'lin' for linear 
+                             confounding,'nonlin' for non-linear 
+                             confounding.""")
         y0 = np.random.normal(loc = mu,
                               scale = 1,
-                              size = n)
+                              size = N)
         y1 = y0.copy()
     
     # apply rules
@@ -76,19 +95,19 @@ def dataset_generator(n = 1000,
     rule_3 = (X["x4"]>0.5)
     rule_4 = (X['x5']<=0.5) & (X["x7"]>0.5) & (X["x8"]<=0.5)
 
-    if n_rules>=1:
+    if M>=1:
         y0[rule_1] += effect_size
-    if n_rules>=2:
+    if M>=2:
         y1[rule_2] += effect_size
-    if n_rules>=3:
+    if M>=3:
         if binary_out:
-            raise ValueError(f"Synthtic dataset with binary outcome and {n_rules} rules has not been implemented yet. Available 'n_rules' options: 1,2.")
+            raise ValueError(f"Synthtic dataset with binary outcome and {M} rules has not been implemented yet. Available 'n_rules' options: 1,2.")
         else:
             y0[rule_3] += (effect_size*0.5)
-    if n_rules>=4:
+    if M>=4:
             y1[rule_4] += (effect_size*2)
-    if n_rules>=5:
-        raise ValueError(f"Synthtic dataset with continuos outcome and {n_rules} rules has not been implemented yet. Available 'n_rules' options: 1,2,3,4.")
+    if M>=5:
+        raise ValueError(f"Synthtic dataset with continuos outcome and {M} rules has not been implemented yet. Available 'n_rules' options: 1,2,3,4.")
     
     y = y0 * (1-z) + y1 * z
     ite = y1 - y0
@@ -99,15 +118,21 @@ def honest_splitting(X, y, z, ratio_dis = 0.5):
     """
     Honest Splitting
 
-    Input
-        X: pd.DataFrame with Covariates ('name1', ..., 'namek')
-        y: pd.Series with Outcome ('y')
-        z: pd.Series with Treatment ('z')
-        ratio_dis: ratio of the observations used for discovery
+    Parameters
+    ----------
+    X: pd.DataFrame 
+        Covariates Matrix (N x P)
+    y: pd.Series    
+        Outcome Vector (N)
+    z: pd.Series
+        Treatment Vector (N)
+    ratio_dis: float, default=0.5
+        Ratio of the observations used for discovery
     
-    Output
-        [[X_dis, y_dis, z_dis], [X_inf, y_inf, z_inf]]: 
-            list of two lists with discovery and inference data
+    Returns
+    -------
+    list 
+        list of triples [X,y,z] data for discovery and inference
     """
 
     N = X.shape[0]
@@ -122,4 +147,4 @@ def honest_splitting(X, y, z, ratio_dis = 0.5):
     y_inf = y[indeces[:N_dis]]
     z_inf = z[indeces[:N_dis]]
 
-    return [[X_dis, y_dis, z_dis], [X_inf, y_inf, z_inf]]
+    return [X_dis, y_dis, z_dis], [X_inf, y_inf, z_inf]

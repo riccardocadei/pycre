@@ -11,7 +11,7 @@ def get_parser():
     parser.add_argument("--ratio_dis", default=0.5, type=float, help="ratio of the observations used for discovery")
     parser.add_argument("--n_trees", default=20, type=int, help="number of decision trees for rules discovery")
     parser.add_argument("--max_depth", default=2, type=int, help="max depth of decision trees for rules discovery (i.e., max decision rules depth)")
-    parser.add_argument("--node_size", default=10, type=int, help="min number of observations in a leaf node for rules discovery")
+    parser.add_argument("--node_size", default=20, type=int, help="min number of observations in a leaf node for rules discovery")
     parser.add_argument("--max_rules", default=50, type=int, help="max number of generated candidate decision rules")
     parser.add_argument("--criterion", default="het", type=str, help="criterion for splitting decision trees for rules discovery")
     parser.add_argument("--decimal", default=2, type=int, help="number of digits to round the rules' thresholds")

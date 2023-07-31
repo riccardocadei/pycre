@@ -22,7 +22,8 @@ def plot_aate(model, args):
     """
 
     model = model.copy()
-    model.index = model.index.str.replace("\(X\['|\)|'\]", "", regex=True)
+    model.index = model.index.str.replace("\(X\['|\)|'\]", "", 
+                                          regex=True)
     ATE = model.iloc[0]
     AATE = model.iloc[1:]
     AATE = AATE.reindex(AATE["coef"].sort_values(ascending=True).index)
@@ -32,10 +33,14 @@ def plot_aate(model, args):
     sns.set_theme(style="whitegrid")
     sns.set_context("paper", font_scale=1.5)
     plt.figure(figsize=(10, M*1.5))
-    plt.errorbar(x=AATE["coef"], y=AATE.index, xerr=AATE["std err"], fmt='o')
+    plt.errorbar(x=AATE["coef"], 
+                 y=AATE.index, 
+                 xerr=AATE["std err"], 
+                 fmt='o')
     plt.ylabel("Rules")
     plt.xlabel("AATE")
-    plt.title(f"ATE = {ATE['coef']:.2f} +/- {ATE['std err']:.2f}", fontsize=20)
+    plt.title(f"ATE = {ATE['coef']:.2f} +/- {ATE['std err']:.2f}", 
+              fontsize=20)
     plt.axvline(x=0, color='black', linestyle='--')
     plt.tight_layout()
     plt.xlim(-xrange, xrange)

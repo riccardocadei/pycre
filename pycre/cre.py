@@ -4,15 +4,18 @@ from plot import plot_aate
 from training import train
 from predict import predict
 
-from parsers import get_parser
-
 import numpy as np
 
 class CRE:
     """
     Causal Rule Ensemble
     
-    TODO: brief description
+    Provides a new method for interpretable heterogeneous 
+    treatment effects characterization in terms of decision rules 
+    via an extensive exploration of heterogeneity patterns by an 
+    ensemble-of-trees approach, enforcing high stability in the 
+    discovery. It relies on a two-stage pseudo-outcome regression, and 
+    theoretical convergence guarantees support it.
     
     Parameters
     ----------
@@ -53,10 +56,10 @@ class CRE:
             Bootstrap ratio subsample for forest generation and 
             stability selection in rules selection, and uncertainty 
             quantification in estimation.
-        learner_y : sklearn learner for outcome estimation, 
-            default=GradientBoostingClassifier()
-        learner_ps : sklearn learner for propensity score estimation, 
-            default=GradientBoostingClassifier()
+        learner_y : sklearn learner, default=GradientBoostingClassifier()
+            model for outcome estimation, 
+        learner_ps : sklearn learner, default=GradientBoostingClassifier()
+            model for propensity score estimation
         method : str, default="tlearner"
             Pseudo-Outcome (ITE) estimator.
         verbose : bool, default=True

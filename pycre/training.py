@@ -1,6 +1,7 @@
 from dataset import honest_splitting
 from ite import estimate_ite
-from decision_rules import generate_rules, get_rules_matrix, rules_filtering, stability_selection
+from decision_rules import generate_rules, get_rules_matrix
+from decision_rules import rules_filtering, stability_selection
 from aate import estimate_aate
 
 import warnings
@@ -10,14 +11,21 @@ def train(X, y, z, args):
     """
     Fit CRE model
 
-    Input
-        X: pd.DataFrame with Covariates ('name1', ..., 'namek')
-        y: pd.Series with Outcome ('y')
-        z: pd.Series with Treatment ('z')
-        args: arguments from parser
-    Output
-        model: pd.DataFrame with ATE and AATE estimates and
-        confidence intervals
+    Parameters
+    ----------
+    X: pd.DataFrame
+        Covariates Matrix (N x K)
+    y: pd.Series
+        Outcome (N)
+    z: pd.Series
+        Treatment (N)
+    args: argparse.Namespace
+        training parameters
+
+    Returns
+    -------
+    pd.DataFrame
+        ATE and AATE estimates and confidence intervals
     """
 
     # 0. Honest Splitting
@@ -68,7 +76,9 @@ def train(X, y, z, args):
                                 alphas = args.alphas)
     if args.verbose: 
         if len(rules) == 0:
-            print(f"      0 candidate rules selected (No HTE discovered with stability selection threshold `t_ss`={args.t_ss})")
+            print(f"""      0 candidate rules selected (No HTE 
+                  discovered with stability selection threshold 
+                  `t_ss`={args.t_ss})""")
         else:
             print(f"      {len(rules)} candidate rules selected")
     
@@ -93,7 +103,8 @@ def train(X, y, z, args):
 
     if args.verbose: 
         temp = model.copy()
-        temp.index = temp.index.str.replace("\(X\['|\)|'\]", "", regex=True)
+        temp.index = temp.index.str.replace("\(X\['|\)|'\]", "", 
+                                            regex=True)
         print(temp)
 
     return model

@@ -1,17 +1,22 @@
-from decision_rules import generate_rules, get_rules_matrix
+from decision_rules import get_rules_matrix
 
 def predict(X, model):
     """
-    Predict ITE for new data
+    Predict ITE by Causal Rule Ensemble (CRE)
     
-    Input
-        X: pd.DataFrame with with Covariates ('name1', ..., 'namek')
-        model: pd.DataFrame with ATE and AATE estimates and
-        confidence intervals
-        
-    Output
-        ite: pd.DataFrame with ITE estimates
+    Parameters
+    ----------
+    X: pd.DataFrame 
+        Covariates matrix (N x P)
+    model: pd.DataFrame 
+        ATE and AATE estimates with confidence intervals
+
+    Returns
+    -------
+    pd.Series
+        ITE estimates (N)
     """
+
     R = get_rules_matrix(list(model.index)[1:], X)
     R.insert(0, 'ATE', 1)
     ite = R.mul(model['coef'].values, axis=1).sum(axis=1)
