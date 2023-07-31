@@ -8,16 +8,17 @@ def plot_aate(model, args):
     """
     Plot the ATE and AATEs with error bars.
     
-    Input:
-        model: AATEs and ATE
-        args: plot arguments
-            xrange: x-axis range
-            save: save plot
-            path: path to save plot
-            exp_name: experiment name
+    Parameters
+    ----------
+    model: AATEs and ATE
+    args: plot arguments
+        save: save plot
+        path: path to save plot
+        exp_name: experiment name
     
-    Output:
-        plot
+    Returns
+    -------
+    plot of ATE and AATEs with error bars
     """
 
     model = model.copy()
@@ -26,6 +27,7 @@ def plot_aate(model, args):
     AATE = model.iloc[1:]
     AATE = AATE.reindex(AATE["coef"].sort_values(ascending=True).index)
     M = AATE.shape[0]
+    xrange = max(abs(AATE["coef"])+AATE["std err"])+0.25
 
     sns.set_theme(style="whitegrid")
     sns.set_context("paper", font_scale=1.5)
@@ -36,7 +38,7 @@ def plot_aate(model, args):
     plt.title(f"ATE = {ATE['coef']:.2f} +/- {ATE['std err']:.2f}", fontsize=20)
     plt.axvline(x=0, color='black', linestyle='--')
     plt.tight_layout()
-    plt.xlim(-args.xrange, args.xrange)
+    plt.xlim(-xrange, xrange)
     plt.ylim(-0.5, len(AATE.index)-0.5)
     
     if args.save: 
