@@ -60,10 +60,10 @@ def estimate_aate(R, ite, B=1, subsample=0.7):
         model['0.975]'] = model['coef'] + 1.96 * model['std err']
     
     # discard not significant rules
-    not_significant = model[model['P>|t|'] > 0.01].index
+    not_significant = model[model['P>|t|'] > 0.05].index
     if "ATE" in not_significant: 
         not_significant = not_significant.drop("ATE")
-    if not not_significant.empty:
+    if not not_significant.empty and B>1:
         R = R.drop(not_significant, axis=1)
         model = estimate_aate(R, ite, B, subsample)
 
