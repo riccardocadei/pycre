@@ -15,7 +15,7 @@ pip install -r requirements.txt
 
 ## Usage
 
-Example
+Example (script)
 ```python
 # generate synthetic dataset
 X, y, z, _ = dataset_generator()
@@ -29,6 +29,11 @@ model.plot()
 
 # predict
 ite_pred = model.eval(X)
+```
+
+Example  (terminal)
+```bash
+python pycre/cre.py 
 ```
 
 More exhaustive examples and simulations are reported in the .ipynb files in the folder `/notebooks`.
