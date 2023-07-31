@@ -18,14 +18,10 @@ pip install -r requirements.txt
 Example
 ```python
 # generate synthetic dataset
-X, y, z, _ = dataset_generator(effect_size = 1,
-                               n_rules = 2,
-                               binary_out = False,
-                               n = 1000)
+X, y, z, _ = dataset_generator()
 
 # define model and train
-args = get_parser().parse_args(args=[])
-model = CRE(args)
+model = CRE()
 model.fit(X, y, z)
 
 # visualize 
