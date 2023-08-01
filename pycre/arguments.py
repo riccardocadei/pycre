@@ -1,7 +1,17 @@
 from sklearn.base import BaseEstimator
+from sklearn.base import ClassifierMixin, RegressorMixin
+
+import pandas as pd
 
 def check_args(args):
-
+    """
+    Check arguments format and dimension
+    
+    Parameters
+    ----------
+    args: argparse.Namespace
+        parameters
+    """
     # Reproducibility
     if args.ratio_dis < 0 or args.ratio_dis > 1:
         raise ValueError("""'ratio_dis' parameter must be between 0 
@@ -48,4 +58,46 @@ def check_args(args):
                            'drlearner', 'causalforest']:
         raise ValueError("""'method' parameter doesn't exist or it 
                          hasn't been implemented yet""")
+
+def check_data(X, y, z, learner_y):
+    """
+    Check data format and dimension
+
+    Parameters
+    ----------
+    X: pd.DataFrame
+        Covariates Matrix (N x K)
+    y: pd.Series
+        Outcome (N)
+    z: pd.Series
+        Treatment (N)
+    learner_y : sklearn learner
+        model for outcome estimation
+    """
+    # check datatype
+    if not isinstance(X, pd.DataFrame):
+        raise ValueError("'X' must be a pandas DataFrame")
+    if not isinstance(y, pd.Series):
+        raise ValueError("'y' must be a pandas Series")
+    if not isinstance(z, pd.Series):
+        raise ValueError("'z' must be a pandas Series")
+    
+    # check X, y and z have the same length
+    if not len(X) == len(y) == len(z):
+        raise ValueError("'X', 'y' and 'z' must have the same length")
+    
+    # check learner_y is a classifier or a regressor
+    binary_y = len(y.unique()) == 2
+    if binary_y and not isinstance(learner_y, ClassifierMixin):
+        print("""WARNING: 'learner_y' is not a (sklearn) classifier, 
+              but 'y' is binary""")
+    if not binary_y and not isinstance(learner_y, RegressorMixin):
+        print("""WARNING: 'learner_y' is not a (sklearn) regressor, 
+              but 'y' is continuos""")
+    
+        
+
+
+
+
     

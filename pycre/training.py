@@ -1,4 +1,5 @@
 from dataset import honest_splitting
+from arguments import check_data
 from ite import estimate_ite
 from decision_rules import generate_rules, get_rules_matrix
 from decision_rules import rules_filtering, stability_selection
@@ -28,6 +29,8 @@ def train(X, y, z, args):
         ATE and AATE estimates and confidence intervals
     """
 
+    check_data(X, y, z, args.learner_y)
+    
     # 0. Honest Splitting
     if args.verbose: print("- Honest Splitting")
     dis, inf = honest_splitting(X, y, z, args.ratio_dis)
