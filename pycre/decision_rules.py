@@ -111,8 +111,8 @@ def rules_filtering(R, t_ext=0.02, t_corr=0.5):
     rare_rules = R.describe().loc["mean"]<t_ext
     R = R.loc[:,~(generic_rules | rare_rules)]
     if R.shape[1]==0: 
-        raise ValueError("""No candidates rules left after `extreme 
-                         rules filtering`. Reduce `t_ext`.""")
+        raise ValueError("No candidates rules left after `extreme "
+                         "rules filtering`. Reduce `t_ext`.")
     
     # discard correlated rules
     corr = R.corr().abs()
@@ -123,9 +123,9 @@ def rules_filtering(R, t_ext=0.02, t_corr=0.5):
                 corr_rules.add(corr.columns[i])
     R = R.drop(columns=corr_rules)
     if R.shape[1]==0:
-        raise ValueError("""No candidates rules left after 
-                         `correlated rules filtering`. Increase 
-                         `t_corr`.""")
+        raise ValueError("No candidates rules left after "
+                         "`correlated rules filtering`. Increase "
+                         "`t_corr`.")
 
     return R
 

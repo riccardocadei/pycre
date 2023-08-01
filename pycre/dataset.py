@@ -79,11 +79,11 @@ def dataset_generator(N = 1000,
         elif confounding=="nonlin":
             mu = X["x1"]+np.cos(X["x3"]*X["x4"])
         else:
-            raise ValueError(f"""`{confounding}` confounding mechanism  
-                             doesn't exists. Please select between 
-                             'no' for no confounding,'lin' for linear 
-                             confounding,'nonlin' for non-linear 
-                             confounding.""")
+            raise ValueError(f"`{confounding}` confounding mechanism "  
+                             "doesn't exists. Please select between "
+                             "'no' for no confounding,'lin' for "
+                             "linear confounding,'nonlin' for "
+                             "non-linear confounding.")
         y0 = np.random.normal(loc = mu,
                               scale = 1,
                               size = N)
@@ -101,13 +101,17 @@ def dataset_generator(N = 1000,
         y1[rule_2] += effect_size
     if M>=3:
         if binary_out:
-            raise ValueError(f"Synthtic dataset with binary outcome and {M} rules has not been implemented yet. Available 'n_rules' options: 1,2.")
+            raise ValueError("Synthtic dataset with binary outcome "
+                             f"and {M} rules has not been implemented "
+                             "yet. Available 'n_rules' options: 1,2.")
         else:
             y0[rule_3] += (effect_size*0.5)
     if M>=4:
             y1[rule_4] += (effect_size*2)
     if M>=5:
-        raise ValueError(f"Synthtic dataset with continuos outcome and {M} rules has not been implemented yet. Available 'n_rules' options: 1,2,3,4.")
+        raise ValueError("Synthtic dataset with continuos outcome "
+                         f"and {M} rules has not been implemented "
+                         "yet. Available 'n_rules' options: 1,2,3,4.")
     
     y = y0 * (1-z) + y1 * z
     ite = y1 - y0
@@ -122,9 +126,9 @@ def honest_splitting(X, y, z, ratio_dis = 0.5):
     ----------
     X: pd.DataFrame 
         Covariates Matrix (N x P)
-    y: pd.Series    
+    y: pd.Series or np.ndarray
         Outcome Vector (N)
-    z: pd.Series
+    z: pd.Series or np.ndarray
         Treatment Vector (N)
     ratio_dis: float, default=0.5
         Ratio of the observations used for discovery
@@ -138,6 +142,8 @@ def honest_splitting(X, y, z, ratio_dis = 0.5):
     N = X.shape[0]
     N_dis = int(N*ratio_dis)
     indeces = np.random.permutation(N)
+    y = np.array(y)
+    z = np.array(z)
 
     X_dis = X.iloc[indeces[N_dis:]]
     y_dis = y[indeces[N_dis:]]

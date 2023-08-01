@@ -21,7 +21,8 @@ def estimate_ite(X, y, z,
         Outcome Vector (N)
     z: pd.Series
         Treatment Vector (N)
-    method: str, default="slearner"
+    method: {'tlearner', 'slearner', 'xlearner', 'aipw', 'drlearner', 
+        'causalforest'}, default="slearner"
         Pseudo-Outcome (ITE) estimator.
     learner_y : sklearn learner, default=GradientBoostingClassifier()
             model for outcome estimation, 
