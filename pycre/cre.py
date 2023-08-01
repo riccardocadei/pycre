@@ -4,6 +4,7 @@ from dataset import dataset_generator
 from plot import plot_aate
 from training import train
 from predict import predict
+import traceback
 
 import numpy as np
 
@@ -126,7 +127,7 @@ class CRE:
             self.model = train(X, y, z, self.args)
             self.rules = list(self.model.index)[1:]
         except:
-            # TODO: save exception
+            traceback.print_exc()
             self.rules = []
 
     def eval(self, X):
