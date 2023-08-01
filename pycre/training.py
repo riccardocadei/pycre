@@ -16,10 +16,10 @@ def train(X, y, z, args):
     ----------
     X: pd.DataFrame
         Covariates Matrix (N x K)
-    y: pd.Series
+    y: pd.Series or np.ndarray
         Outcome (N)
-    z: pd.Series
-        Treatment (N)
+    z: pd.Series or np.ndarray
+        Treatment (N) 
     args: argparse.Namespace
         training parameters
 
@@ -30,7 +30,7 @@ def train(X, y, z, args):
     """
 
     check_data(X, y, z, args.learner_y)
-    
+
     # 0. Honest Splitting
     if args.verbose: print("- Honest Splitting")
     dis, inf = honest_splitting(X, y, z, args.ratio_dis)
