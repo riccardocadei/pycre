@@ -1,4 +1,5 @@
 from parsers import get_parser
+from arguments import check_args
 from dataset import dataset_generator
 from plot import plot_aate
 from training import train
@@ -117,7 +118,7 @@ class CRE:
         for kwarg, value in kwargs.items():
             setattr(self.args, kwarg, value)
 
-        # TODO: check args
+        check_args(self.args)
         np.random.seed(self.args.seed)
 
     def fit(self, X, y, z):
