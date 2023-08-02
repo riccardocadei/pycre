@@ -64,26 +64,29 @@ def train(X, y, z, args):
     if args.verbose: print(f"      {R_dis.shape[1]} rules generated")
 
     # Rules Filtering
-    if args.verbose: print("    Rules Filtering")
-    R_dis = rules_filtering(R_dis,
-                            t_ext = args.t_ext, 
-                            t_corr = args.t_corr,)
-    if args.verbose: print(f"      {R_dis.shape[1]} rules filtered")
+    if R_dis.shape[1]>0:
+        if args.verbose: print("    Rules Filtering")
+        R_dis = rules_filtering(R_dis,
+                                t_ext = args.t_ext, 
+                                t_corr = args.t_corr,)
+        if args.verbose: print(f"      {R_dis.shape[1]} rules "
+                               "filtered")
 
     # Rules Selection
-    if args.verbose: print(f"    Rules Selection")
-    rules = stability_selection(R_dis, ite_dis, 
-                                t_ss = args.t_ss, 
-                                B = args.B,
-                                subsample = args.subsample,
-                                alphas = args.alphas)
-    if args.verbose: 
-        if len(rules) == 0:
-            print(f"""      0 candidate rules selected (No HTE 
-                  discovered with stability selection threshold 
-                  `t_ss`={args.t_ss})""")
-        else:
-            print(f"      {len(rules)} candidate rules selected")
+    if R_dis.shape[1]>0:
+        if args.verbose: print(f"    Rules Selection")
+        rules = stability_selection(R_dis, ite_dis, 
+                                    t_ss = args.t_ss, 
+                                    B = args.B,
+                                    subsample = args.subsample,
+                                    alphas = args.alphas)
+        if args.verbose: 
+            if len(rules) == 0:
+                print("      0 candidate rules selected (No HTE "
+                    "discovered with stability selection threshold "
+                    f"`t_ss`={args.t_ss})")
+            else:
+                print(f"      {len(rules)} candidate rules selected")
     
 
     # 2. Inference
