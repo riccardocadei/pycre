@@ -22,7 +22,6 @@ def estimate_aate(R, ite, B=1, subsample=0.7):
     model: pd.DataFrame
         ATE and AATE estimates and confidence intervals
     """
-
     if B==1:
         # estimate ATE
         ate = sm.OLS(endog = ite, 
@@ -43,8 +42,8 @@ def estimate_aate(R, ite, B=1, subsample=0.7):
     else:
         model_list = []
         for _ in range(B):
-            R_ = R.sample(frac=subsample, axis=0)
-            ite_ = ite[R_.index]
+            ite_ = ite.sample(frac=subsample, axis=0)
+            R_ = R.loc[ite_.index,:]
             model = estimate_aate(R_, ite_, B=1)
             model_list.append(model)
         model = pd.concat(model_list).groupby(level=0)
