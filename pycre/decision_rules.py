@@ -80,8 +80,8 @@ def get_rules_matrix(rules, X):
     pd.DataFrame
         Rules Matrix (N x M)
     """
-
-    R = {}
+    # define a pd.dataframe with the same index as X
+    R = pd.DataFrame(index=X.index)
     for rule in rules:
         R[rule] = eval(rule).astype(int)
     return pd.DataFrame(R)
