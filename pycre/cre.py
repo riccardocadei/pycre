@@ -86,7 +86,7 @@ class CRE:
       
     Methods
     -------
-    fit(X, y, z)
+    fit(X, y, z, W=None)
         Fit CRE model
     eval(X)
         Evaluate CRE model
@@ -122,9 +122,9 @@ class CRE:
         check_args(self.args)
         np.random.seed(self.args.seed)
 
-    def fit(self, X, y, z):
+    def fit(self, X, y, z, W = None):
         try:
-            self.model = train(X, y, z, self.args)
+            self.model = train(X, y, z, self.args, W)
             self.rules = list(self.model.index)[1:]
         except:
             traceback.print_exc()

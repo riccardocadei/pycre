@@ -118,7 +118,7 @@ def dataset_generator(N = 1000,
 
     return X, y, z, ite
 
-def honest_splitting(X, y, z, ratio_dis = 0.5):
+def honest_splitting(X, y, z, ratio_dis = 0.5, W = None):
     """
     Honest Splitting
 
@@ -132,11 +132,13 @@ def honest_splitting(X, y, z, ratio_dis = 0.5):
         Treatment Vector (N)
     ratio_dis: float, default=0.5
         Ratio of the observations used for discovery
+    W: pd.DataFrame, default=None
+        Additional Covariates Matrix (N x J)
     
     Returns
     -------
     list 
-        list of triples [X,y,z] data for discovery and inference
+        list of triples [X,y,z,W] data for discovery and inference
     """
 
     N = X.shape[0]
@@ -153,4 +155,11 @@ def honest_splitting(X, y, z, ratio_dis = 0.5):
     y_inf = y[indeces[:N_dis]]
     z_inf = z[indeces[:N_dis]]
 
-    return [X_dis, y_dis, z_dis], [X_inf, y_inf, z_inf]
+    if W is not None:
+        W_dis = W.iloc[indeces[N_dis:]]
+        W_inf = W.iloc[indeces[:N_dis]]
+    else: 
+        W_dis = None
+        W_inf = None
+
+    return [X_dis, y_dis, z_dis, W_dis], [X_inf, y_inf, z_inf, W_inf]

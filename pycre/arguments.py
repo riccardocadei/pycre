@@ -59,7 +59,7 @@ def check_args(args):
         raise ValueError("'method' parameter doesn't exist or it "
                          "hasn't been implemented yet")
 
-def check_data(X, y, z, learner_y):
+def check_data(X, y, z, learner_y, W=None):
     """
     Check data format and dimension
 
@@ -73,6 +73,8 @@ def check_data(X, y, z, learner_y):
         Treatment (N)
     learner_y : sklearn learner
         model for outcome estimation
+    W: pd.DataFrame, default=None
+        Additional Covariates Matrix (N x J)
     """
     # check datatype
     if not isinstance(X, pd.DataFrame):
@@ -81,10 +83,14 @@ def check_data(X, y, z, learner_y):
         raise ValueError("'y' must be a pandas Series")
     if not isinstance(z, (pd.Series, np.ndarray)):
         raise ValueError("'z' must be a pandas Series")
+    if W is not None and not isinstance(W, pd.DataFrame):
+        raise ValueError("'W' must be a pandas DataFrame")
     
     # check X, y and z have the same length
     if not len(X) == len(y) == len(z):
         raise ValueError("'X', 'y' and 'z' must have the same length")
+    if W is not None and not len(X) == len(W):
+        raise ValueError("'X' and 'W' must have the same length")
     
     # check learner_y is a classifier or a regressor
     binary_y = len(np.unique(y))==2

@@ -5,10 +5,12 @@ from decision_rules import generate_rules, get_rules_matrix
 from decision_rules import rules_filtering, stability_selection
 from aate import estimate_aate
 
+import pandas as pd
+
 import warnings
 warnings.filterwarnings("ignore")
 
-def train(X, y, z, args):
+def train(X, y, z, args, W = None):
     """
     Fit CRE model
 
@@ -22,6 +24,8 @@ def train(X, y, z, args):
         Treatment (N) 
     args: argparse.Namespace
         training parameters
+    W: pd.DataFrame, default=None
+        Additional Covariates Matrix (N x J)
 
     Returns
     -------
@@ -29,20 +33,20 @@ def train(X, y, z, args):
         ATE and AATE estimates and confidence intervals
     """
 
-    check_data(X, y, z, args.learner_y)
+    check_data(X, y, z, args.learner_y, W)
 
     # 0. Honest Splitting
     if args.verbose: print("- Honest Splitting")
-    dis, inf = honest_splitting(X, y, z, args.ratio_dis)
-    X_dis, y_dis, z_dis = dis
-    X_inf, y_inf, z_inf = inf
+    dis, inf = honest_splitting(X, y, z, args.ratio_dis, W)
+    X_dis, y_dis, z_dis, W_dis = dis
+    X_inf, y_inf, z_inf, W_inf = inf
 
     # 1. Discovery
     if args.verbose: print("- Discovery Step:")
 
     # Esitimate ITE
     if args.verbose: print("    ITE Estimation")
-    ite_dis = estimate_ite(X = X_dis, 
+    ite_dis = estimate_ite(X = pd.concat([X_dis, W_dis], axis=1), 
                            y = y_dis, 
                            z = z_dis,
                            method = args.method,
@@ -93,7 +97,7 @@ def train(X, y, z, args):
     if args.verbose: print("- Inference Step:")
     # Esitimate ITE
     if args.verbose: print("    ITE Estimation")
-    ite_inf = estimate_ite(X = X_inf, 
+    ite_inf = estimate_ite(X = pd.concat([X_inf, W_inf], axis=1), 
                            y = y_inf, 
                            z = z_inf,
                            method = args.method,
