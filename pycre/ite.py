@@ -11,18 +11,28 @@ def estimate_ite(X, y, z,
                  learner_y = GradientBoostingClassifier(),
                  learner_ps = GradientBoostingClassifier()):
     """
-    Estimate ITE
+    Estimate Pseudo-Outcome (ITE)
 
-    Input
-        X: pd.DataFrame with Covariates ('X')
-        y: pd.Series with Outcome ('y')
-        z: pd.Series with Treatment ('z')
-        learner_y: sklearn learner for outcome estimation
-        learner_ps: sklearn learner for propensity score estimation
-        method: method for ITE estimation
+    Parameters
+    ----------
+    X: pd.DataFrame 
+        Covariates Matrix (N x P)
+    y: pd.Series
+        Outcome Vector (N)
+    z: pd.Series
+        Treatment Vector (N)
+    method: {'tlearner', 'slearner', 'xlearner', 'aipw', 'drlearner', 
+        'causalforest'}, default="slearner"
+        Pseudo-Outcome (ITE) estimator.
+    learner_y : sklearn learner, default=GradientBoostingClassifier()
+            model for outcome estimation, 
+    learner_ps : sklearn learner, default=GradientBoostingClassifier()
+            model for propensity score estimation
     
-    Output
-        ite: pd.Series with ITE estimates (N)
+    Returns
+    -------
+    pd.Series 
+        ITE estimates (N)
     """
 
     if method == 'tlearner':
@@ -45,7 +55,8 @@ def estimate_ite(X, y, z,
                                 model_t = learner_ps, 
                                 model_y = learner_y)
     else:
-        raise ValueError(f'{method} method for ITE estimation not implemented')
+        raise ValueError(f"""{method} method for ITE estimation not 
+                         implemented""")
     model.fit(Y=y, T=z, X=X)
     ite = pd.Series(model.effect(X), index=X.index)
     return ite
@@ -61,7 +72,7 @@ class AIPW:
         mu0 = self.model_outcome.predict(X.assign(z=0))
         mu1 = self.model_outcome.predict(X.assign(z=1))
         ps = self.model_propensity.predict_proba(X)[:, 1]
-        ite = mu1 - mu0 +  T * (Y - mu1) / (ps) - (1 - T) * (Y - mu0) / (1 - ps)    
+        ite = mu1-mu0 + T * (Y-mu1) / (ps) - (1-T) * (Y-mu0) / (1-ps)    
         self.ite = pd.Series(ite, index=X.index)
 
     def effect(self, X):

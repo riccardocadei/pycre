@@ -11,7 +11,7 @@ def get_parser():
     parser.add_argument("--ratio_dis", default=0.5, type=float, help="ratio of the observations used for discovery")
     parser.add_argument("--n_trees", default=20, type=int, help="number of decision trees for rules discovery")
     parser.add_argument("--max_depth", default=2, type=int, help="max depth of decision trees for rules discovery (i.e., max decision rules depth)")
-    parser.add_argument("--node_size", default=10, type=int, help="min number of observations in a leaf node for rules discovery")
+    parser.add_argument("--node_size", default=20, type=int, help="min number of observations in a leaf node for rules discovery")
     parser.add_argument("--max_rules", default=50, type=int, help="max number of generated candidate decision rules")
     parser.add_argument("--criterion", default="het", type=str, help="criterion for splitting decision trees for rules discovery")
     parser.add_argument("--decimal", default=2, type=int, help="number of digits to round the rules' thresholds")
@@ -22,7 +22,6 @@ def get_parser():
     parser.add_argument("--B", default=20, type=int, help="number of bootstrap samples for stability selection in rules selection and uncertainty quantification in estimation")
     parser.add_argument("--subsample", default=0.5, type=float, help="bootstrap ratio subsample for forest generation and stability selection in rules selection, and uncertainty quantification in estimation")
 
-
     # General
     parser.add_argument("--learner_y", default=GradientBoostingRegressor(), help="learner for outcome")
     parser.add_argument("--learner_ps", default=GradientBoostingClassifier(), help="learner for propensity score")
@@ -31,10 +30,7 @@ def get_parser():
     # Describe
     parser.add_argument("--exp_name", default="example.png", type=str, help="experiment name")
     parser.add_argument("--verbose", default=True, type=bool, help="verbose")
-    parser.add_argument("--path", default="results/", type=str, help="path to save plot")
-
-    # Plot
-    parser.add_argument("--save", default=False, type=bool, help="save plot")
-    parser.add_argument("--xrange", default=2, type=int, help="x-axis range")
+    parser.add_argument("--path", default="../results/", type=str, help="path to save results (i.e., plots)")
+    parser.add_argument("--save", default=False, type=bool, help="save results (i.e., plots)")
 
     return parser

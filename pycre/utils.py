@@ -3,13 +3,17 @@ import numpy as np
 def clip(array, clip_tr=0.01):
     """
     Clip array values to [clip_tr, 1-clip_tr]
+
+    Parameters
+    ----------
+    array: np.array
+    clip_tr: float, default=0.01
+        threshold for clipping propensity scores
     
-    Input
-        array: np.array
-        clip_tr: threshold for clipping propensity scores
-    
-    Output
-        array: np.array
+    Returns
+    -------
+    np.array
+        Clipped array
     """
     
     if clip_tr is not None:
