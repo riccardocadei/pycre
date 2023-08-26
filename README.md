@@ -8,7 +8,7 @@ Several methodologies have been proposed for both tasks, but providing interpret
 
 ## Installation
 
-```terminal
+```bash
 pip install pycre
 ```
 
