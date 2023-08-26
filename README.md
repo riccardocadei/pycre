@@ -11,10 +11,10 @@ Several methodologies have been proposed for both tasks, but providing interpret
 ```bash
 pip install pycre
 ```
+The package is compatible with Python 3.6+. The full list of dependencies is reported in the file `requirements.txt`.
 
 ## Usage
 
-Example (script)
 ```python
 from pycre.cre import CRE
 from pycre.dataset import dataset_generator
