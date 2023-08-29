@@ -6,17 +6,19 @@ In health and social sciences, it is critically important to identify subgroups 
 
 Several methodologies have been proposed for both tasks, but providing interpretability in the results is still an open challenge. [Bargagli-Stoffi et al. (2023)](https://arxiv.org/abs/2009.09036) proposed Causal Rule Ensemble, a new method for HTE characterization in terms of decision rules, via an extensive exploration of heterogeneity patterns by an ensemble-of-trees approach, enforcing stability in the discovery. pycre is a Python Package providing a flexible implementation of the Causal Rule Ensemble algorithm.
 
-## Requirements
+## Installation
 
+```bash
+pip install pycre
 ```
-pip install --upgrade pip
-pip install -r requirements.txt
-```
+The package is compatible with Python 3.6+. The full list of dependencies is reported in the file `requirements.txt`.
 
 ## Usage
 
-Example (script)
 ```python
+from pycre.cre import CRE
+from pycre.dataset import dataset_generator
+
 # generate synthetic dataset
 X, y, z, _ = dataset_generator()
 
@@ -29,11 +31,6 @@ model.plot()
 
 # predict
 ite_pred = model.eval(X)
-```
-
-Example  (terminal)
-```bash
-python pycre/cre.py 
 ```
 
 More exhaustive examples and simulations are reported in the .ipynb files in the folder `/notebooks`.
